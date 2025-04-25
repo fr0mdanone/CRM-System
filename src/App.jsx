@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import "./App.css";
+import "./App.scss";
 import AddUserTask from "./Components/AddUserTask";
 import Tasks from "./Components/Tasks";
 import FilterButtons from "./Components/FilterButtons";
@@ -71,14 +71,34 @@ function App() {
 	async function submittingChanges(task) {
 		try {
 			await editTask(task);
-			const updatingEditingTasks = updatedTasks.map((oldTask) => {
+			const updatingEditedTasks = updatedTasks.map((oldTask) => {
 				return oldTask.id === task.id ? task : oldTask;
 			});
-			setUpdatedTasks(updatingEditingTasks);
+			setUpdatedTasks(updatingEditedTasks);
 		} catch (error) {
 			setError(error);
 		}
 	}
+
+	async function toggleTaskDone(task) {
+		const updatedTask = { ...task, isDone: !task.isDone };
+		try {
+			await editTask(updatedTask);
+			const updatingEditedTasks = updatedTasks.map((oldTask) => {
+				return oldTask.id === updatedTask.id ? updatedTask : oldTask;
+			});
+			setUpdatedTasks(updatingEditedTasks);
+		} catch (error) {
+			setError(error);
+		}
+	}
+
+	// useEffect(
+	// 	function loggingEdits() {
+	// 		console.log(updatedTasks);
+	// 	},
+	// 	[updatedTasks]
+	// );
 
 	return (
 		<>
@@ -101,6 +121,7 @@ function App() {
 					tasks={updatedTasks}
 					onDelete={deletingTask}
 					onEdit={editingData}
+					onToggle={toggleTaskDone}
 				/>
 			</section>
 		</>
