@@ -48,8 +48,7 @@ export async function deleteTask(id) {
 			throw new Error("Не удалось удалить задачу. Задача не найдена.");
 		}
 	}
-	const resData = await response.json();
-	return resData;
+	return;
 }
 
 export async function editTask(task) {

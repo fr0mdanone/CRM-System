@@ -1,3 +1,5 @@
+import styles from "./AddUserTask.module.scss";
+
 import { useState } from "react";
 
 export default function AddUserTask({ onAddTask }) {
@@ -15,7 +17,7 @@ export default function AddUserTask({ onAddTask }) {
 	}
 
 	return (
-		<form onSubmit={handleUserSubmit}>
+		<form onSubmit={handleUserSubmit} className={`${styles.form}`}>
 			<input
 				type="text"
 				placeholder="Task to be done..."
@@ -24,8 +26,11 @@ export default function AddUserTask({ onAddTask }) {
 				required
 				minLength={2}
 				maxLength={64}
+				className={`${styles.input}`}
 			/>
-			<button type="submit">Add</button>
+			<button type="submit" className={`${styles.button}`}>
+				Add
+			</button>
 		</form>
 	);
 }

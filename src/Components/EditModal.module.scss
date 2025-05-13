@@ -1,0 +1,40 @@
+.flexContainer {
+	display: flex;
+	gap: 0.5rem;
+	padding-left: 20px;
+	max-width: 500px;
+	width: 100%;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.input {
+	border-bottom: 1px solid black;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: row-reverse;
+	gap: 20px;
+	width: 40%;
+}
+
+.button {
+	max-width: 100px;
+	min-height: 35px;
+	max-height: 50px;
+	border-radius: 3px;
+	padding: 10px;
+}
+
+.button:first-child {
+	margin-right: 10px;
+}
+
+.cancel {
+	background-color: var(--main-red);
+}
+
+.save {
+	background-color: var(--main-blue);
+}

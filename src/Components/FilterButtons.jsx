@@ -1,8 +1,10 @@
+import styles from "./FilterButtons.module.scss";
+
 import Button from "../UI/Button";
 
 export default function FilterButtons({ onClick, filter }) {
 	return (
-		<ul>
+		<ul className={`${styles.flexContainer}`}>
 			<li>
 				<Button
 					id="all"

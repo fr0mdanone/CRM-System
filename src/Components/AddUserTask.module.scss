@@ -1,0 +1,22 @@
+.form {
+	padding: 20px;
+	display: flex;
+	gap: 20px;
+}
+
+.button {
+	font-family: "Arial", sans-serif;
+	font-size: 0.8rem;
+	padding: 0.5rem 3rem;
+	border-radius: 6px;
+	color: white;
+	background-color: var(--main-blue);
+}
+
+.button:hover {
+	background-color: #72a5fd;
+}
+
+.input {
+	border-bottom: 1px solid grey;
+}

@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import styles from "./EditModal.module.scss";
+
 export default function EditModal({
 	incomingTask,
 	onCancelChanges,
@@ -19,12 +21,35 @@ export default function EditModal({
 	}
 
 	return (
-		<form onSubmit={handleUserSubmit}>
-			<input type="text" onChange={handleUserInput} value={userInput} />
-			<button type="button" onClick={() => onCancelChanges()}>
-				Отмена
-			</button>
-			<button type="submit">Сохранить</button>
-		</form>
+		<div className="backdrop" onClick={() => onCancelChanges()}>
+			<div
+				className="modal-window"
+				onClick={(event) => event.stopPropagation()}
+			>
+				<form onSubmit={handleUserSubmit} className={`${styles.flexContainer}`}>
+					<input
+						type="text"
+						onChange={handleUserInput}
+						value={userInput}
+						minLength={2}
+						maxLength={64}
+						required
+						className={`${styles.input}`}
+					/>
+					<div className={`${styles.buttons}`}>
+						<button
+							type="button"
+							className={`${styles.cancel} ${styles.button}`}
+							onClick={() => onCancelChanges()}
+						>
+							Отмена
+						</button>
+						<button type="submit" className={`${styles.save} ${styles.button}`}>
+							Сохранить
+						</button>
+					</div>
+				</form>
+			</div>
+		</div>
 	);
 }

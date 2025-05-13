@@ -1,3 +1,5 @@
+import styles from "./Button.module.scss";
+
 export default function Button({
 	children,
 	type = "button",
@@ -8,7 +10,7 @@ export default function Button({
 		<button
 			type={type}
 			{...props}
-			className={isActive ? "button active" : "button"}
+			className={`${styles.button} ${isActive ? styles.active : ""}`}
 		>
 			{children}
 		</button>

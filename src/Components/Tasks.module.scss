@@ -1,0 +1,46 @@
+.flexContainer {
+	display: flex;
+	gap: 0.5rem;
+	padding-left: 20px;
+	max-width: 500px;
+	width: 100%;
+	align-items: center;
+	margin: 0 0 10px 20px;
+}
+
+.buttons {
+	display: flex;
+	flex-direction: row-reverse;
+	gap: 20px;
+	width: 40%;
+}
+
+.taskCheckbox {
+	display: flex;
+	gap: 10px;
+	margin-right: auto;
+	width: 60%;
+}
+
+.tasksItem {
+	background-color: white;
+	min-height: 70px;
+}
+
+.button {
+	width: 50px;
+	height: 50px;
+	border-radius: 3px;
+}
+
+.button:first-child {
+	margin-right: 10px;
+}
+
+.edit {
+	background-color: var(--main-blue);
+}
+
+.delete {
+	background-color: var(--main-red);
+}

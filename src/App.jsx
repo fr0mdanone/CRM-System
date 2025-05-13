@@ -78,6 +78,7 @@ function App() {
 		} catch (error) {
 			setError(error);
 		}
+		setIsEditing(null);
 	}
 
 	async function toggleTaskDone(task) {
@@ -92,13 +93,6 @@ function App() {
 			setError(error);
 		}
 	}
-
-	// useEffect(
-	// 	function loggingEdits() {
-	// 		console.log(updatedTasks);
-	// 	},
-	// 	[updatedTasks]
-	// );
 
 	return (
 		<>
@@ -116,7 +110,7 @@ function App() {
 			)}
 			<AddUserTask onAddTask={addingTask} />
 			<section>
-				<FilterButtons onClick={setTasksFilter} />
+				<FilterButtons onClick={setTasksFilter} filter={filter} />
 				<Tasks
 					tasks={updatedTasks}
 					onDelete={deletingTask}

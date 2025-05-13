@@ -1,0 +1,27 @@
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+	border: 10px solid var(--main-red);
+
+	h2 {
+		font-weight: bold;
+		font-size: 2rem;
+	}
+
+	p {
+		color: var(--main-red);
+		font-weight: bold;
+		text-align: center;
+	}
+}
+
+.button {
+	max-width: 100px;
+	min-height: 35px;
+	max-height: 50px;
+	border-radius: 3px;
+	padding: 10px;
+	background-color: var(--main-blue);
+}
