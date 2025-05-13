@@ -27,6 +27,14 @@
 	min-height: 70px;
 }
 
+.taskTitle {
+	max-width: 100%;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	white-space: normal;
+	margin: 10px 0 10px 0;
+}
+
 .button {
 	width: 50px;
 	height: 50px;

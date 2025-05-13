@@ -24,7 +24,7 @@ export default function Tasks({ tasks, onDelete, onEdit, onToggle }) {
 								checked={task.isDone}
 								onChange={() => onToggle(task)}
 							/>
-							<p>{task.title}</p>
+							<p className={`${styles.taskTitle}`}>{task.title}</p>
 						</div>
 						<div className={`${styles.buttons}`}>
 							<button
