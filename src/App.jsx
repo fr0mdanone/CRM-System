@@ -19,6 +19,7 @@ function App() {
 	const [updatedTasks, setUpdatedTasks] = useState([]);
 	const [filter, setFilter] = useState("all");
 	const [isEditing, setIsEditing] = useState();
+	const [tasksInfo, setTasksInfo] = useState({});
 
 	function setTasksFilter(id) {
 		setFilter(id);
@@ -28,14 +29,17 @@ function App() {
 		async function fetchingTasks() {
 			try {
 				const response = await getTasks(filter);
-				console.log(response);
+
+				console.log("FETCH: response.data ", response.data);
 
 				setUpdatedTasks(response.data);
+				setTasksInfo(response.info);
 			} catch (error) {
 				setError(error);
 			}
 		}
 		fetchingTasks();
+		console.log("FETCH: filter ", filter);
 	}, [filter]);
 
 	async function deletingTask(id) {
@@ -44,6 +48,9 @@ function App() {
 			setUpdatedTasks((prevTasksArray) =>
 				prevTasksArray.filter((task) => task.id != id)
 			);
+			const refreshed = await getTasks(filter);
+			setUpdatedTasks(refreshed.data);
+			setTasksInfo(refreshed.info);
 		} catch (error) {
 			setError(error);
 		}
@@ -57,8 +64,10 @@ function App() {
 			};
 
 			const response = await addTask(userData);
-			console.log(response);
 			setUpdatedTasks((prevTasksArray) => [...prevTasksArray, response]);
+			const refreshed = await getTasks(filter);
+			setUpdatedTasks(refreshed.data);
+			setTasksInfo(refreshed.info);
 		} catch (error) {
 			setError(error);
 		}
@@ -75,6 +84,8 @@ function App() {
 				return oldTask.id === task.id ? task : oldTask;
 			});
 			setUpdatedTasks(updatingEditedTasks);
+			const refreshed = await getTasks(filter);
+			setUpdatedTasks(refreshed.data);
 		} catch (error) {
 			setError(error);
 		}
@@ -88,7 +99,10 @@ function App() {
 			const updatingEditedTasks = updatedTasks.map((oldTask) => {
 				return oldTask.id === updatedTask.id ? updatedTask : oldTask;
 			});
-			setUpdatedTasks(updatingEditedTasks);
+			const response = await getTasks(filter);
+			setUpdatedTasks(response.data);
+			setTasksInfo(response.info);
+			console.log("TOGGLE: updatedTasks = ", updatingEditedTasks);
 		} catch (error) {
 			setError(error);
 		}
@@ -110,7 +124,11 @@ function App() {
 			)}
 			<AddUserTask onAddTask={addingTask} />
 			<section>
-				<FilterButtons onClick={setTasksFilter} filter={filter} />
+				<FilterButtons
+					onClick={setTasksFilter}
+					filter={filter}
+					info={tasksInfo}
+				/>
 				<Tasks
 					tasks={updatedTasks}
 					onDelete={deletingTask}

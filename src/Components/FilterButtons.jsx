@@ -2,7 +2,7 @@ import styles from "./FilterButtons.module.scss";
 
 import Button from "../UI/Button";
 
-export default function FilterButtons({ onClick, filter }) {
+export default function FilterButtons({ onClick, filter, info }) {
 	return (
 		<ul className={`${styles.flexContainer}`}>
 			<li>
@@ -11,7 +11,7 @@ export default function FilterButtons({ onClick, filter }) {
 					onClick={(event) => onClick(event.target.id)}
 					isActive={filter === "all"}
 				>
-					Все
+					{`Все (${info.all ?? "Загружается..."})`}
 				</Button>
 			</li>
 			<li>
@@ -20,7 +20,7 @@ export default function FilterButtons({ onClick, filter }) {
 					onClick={(event) => onClick(event.target.id)}
 					isActive={filter === "completed"}
 				>
-					Выполнено
+					{`Выполнено (${info.completed ?? "Загружается..."})`}
 				</Button>
 			</li>
 			<li>
@@ -29,7 +29,7 @@ export default function FilterButtons({ onClick, filter }) {
 					onClick={(event) => onClick(event.target.id)}
 					isActive={filter === "inWork"}
 				>
-					В работе
+					{`В работе (${info.inWork ?? "Загружается..."})`}
 				</Button>
 			</li>
 		</ul>
