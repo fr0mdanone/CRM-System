@@ -1,3 +1,5 @@
+import AddUserTask from "./Components/AddUserTask";
+
 import "./App.scss";
 
 function App() {
