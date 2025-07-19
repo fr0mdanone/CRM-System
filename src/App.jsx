@@ -5,8 +5,7 @@ import "./App.scss";
 function App() {
 	return (
 		<>
-			{/* {isEditing && <EditModal />}
-			{error && <ErrorModal />} */}
+			{/*error && <ErrorModal />} */}
 			<AddUserTask />
 			{/* <section>
 				<FilterButtons />

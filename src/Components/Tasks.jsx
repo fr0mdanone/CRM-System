@@ -22,7 +22,7 @@ export default function Tasks({ filter, someProps, onError }) {
 	return (
 		<ol>
 			{updatedTasks.map((task) => (
-				<TodoItem task={task} />
+				<TodoItem key={task.id} task={task} />
 			))}
 		</ol>
 	);
