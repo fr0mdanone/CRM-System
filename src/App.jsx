@@ -1,16 +1,18 @@
 import AddUserTask from "./Components/AddUserTask";
+import Tasks from "./Components/Tasks";
 
 import "./App.scss";
 
 function App() {
 	return (
 		<>
-			{/*error && <ErrorModal />} */}
 			<AddUserTask />
-			{/* <section>
-				<FilterButtons />
+			{
+				/* <section>
+				<FilterButtons />*/
 				<Tasks />
-			</section> */}
+				/* </section> */
+			}
 		</>
 	);
 }

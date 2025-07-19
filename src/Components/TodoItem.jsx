@@ -3,20 +3,21 @@ import DeleteIcon from "../assets/DeleteIcon";
 import EditIcon from "../assets/EditIcon";
 import { editTask, deleteTask } from "../API/FetchingFunctions";
 
-export default function TodoItem({ task }) {
-	const [isEditing, setIsEditing] = useState;
+export default function TodoItem({ task, onSubmittingEditTask }) {
+	const [isEditing, setIsEditing] = useState(false);
 	const [userInput, setUserInput] = useState("");
+	const [error, setError] = useState(null);
 
 	function handleUserInput(event) {
 		setUserInput(event.target.value);
 	}
 
-	async function onToggle() {
+	async function onToggle(task) {
 		const updatedTask = { ...task, isDone: !task.isDone };
 		try {
 			await editTask(updatedTask);
 		} catch (error) {
-			// передать объект ошибки в Tasks и оттуда передать в App.jsx
+			setError(error);
 		}
 	}
 
@@ -24,38 +25,50 @@ export default function TodoItem({ task }) {
 		try {
 			await deleteTask(id);
 		} catch (error) {
-			//передать объект ошибки в Tasks и оттуда передать в App.jsx
+			setError(error);
 		}
 	}
 
 	async function handleUserSubmit(event, task) {
 		event.preventDefault();
 
-		const userTask = {
-			title: userInput,
-			isDone: task.isDone,
-		};
-
 		try {
-			await editTask(userTask);
+			await editTask(task);
 		} catch (error) {
-			//передать объект ошибки в Tasks и оттуда передать в App.jsx
+			setError(error);
 		} finally {
 			setIsEditing(false);
 		}
 
 		setUserInput("");
+		onSubmittingEditTask();
 	}
+
+	console.log("isEditing is ", isEditing);
 
 	return (
 		<li>
-			{!isEditing && (
+			{!isEditing && !error && (
 				<div>
-					<input type="checkbox" checked={task.isDone} onChange={onToggle} />
-					<p>{task.title}</p>
+					<div>
+						<input
+							type="checkbox"
+							checked={task.isDone}
+							onChange={() => onToggle(task)}
+						/>
+						<p>{task.title}</p>
+					</div>
+					<div>
+						<button>
+							<DeleteIcon onClick={() => onDeleteTask(task.id)} />
+						</button>
+						<button>
+							<EditIcon onClick={() => setIsEditing(true)} />
+						</button>
+					</div>
 				</div>
 			)}
-			{isEditing && (
+			{isEditing && !error && (
 				<form onSubmit={(event) => handleUserSubmit(event, task)}>
 					<input type="text" value={userInput} onChange={handleUserInput} />
 					<button type="submit">Save</button>
@@ -64,14 +77,14 @@ export default function TodoItem({ task }) {
 					</button>
 				</form>
 			)}
-			<div>
-				<button>
-					<DeleteIcon onClick={() => onDeleteTask(task.id)} />
-				</button>
-				<button>
-					<EditIcon onClick={setIsEditing(true)} />
-				</button>
-			</div>
+			{error && (
+				<div>
+					<p>{error.message}</p>
+					<button type="button" onClick={() => setError(null)}>
+						Ok
+					</button>
+				</div>
+			)}
 		</li>
 	);
 }

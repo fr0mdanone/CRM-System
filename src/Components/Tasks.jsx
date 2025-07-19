@@ -1,10 +1,14 @@
+import TodoItem from "./TodoItem";
+
 import { useState, useEffect } from "react";
 
 import { getTasks } from "../API/FetchingFunctions";
 
-export default function Tasks({ filter, someProps, onError }) {
+export default function Tasks({ filter, someProps }) {
 	//filter из FilterButtons, someProprs - триггер для обновления UI, нужен пропс ошибки, чтобы передать родителю инфу о том, что возникла ошибка и вывести ее модалкой
 	const [updatedTasks, setUpdatedTasks] = useState([]);
+	const [error, setError] = useState(null);
+	const [trigger, setTrigger] = useState(false);
 
 	useEffect(() => {
 		async function fetchingTasks() {
@@ -12,18 +16,37 @@ export default function Tasks({ filter, someProps, onError }) {
 				const response = await getTasks(filter);
 				setUpdatedTasks(response.data);
 			} catch (error) {
-				onError(error);
+				setError(error);
 			}
 		}
 		fetchingTasks();
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [someProps, filter]);
+	}, [someProps, filter, trigger]);
+
+	function triggerFunc() {
+		setTrigger(!trigger);
+	}
 
 	return (
-		<ol>
-			{updatedTasks.map((task) => (
-				<TodoItem key={task.id} task={task} />
-			))}
-		</ol>
+		<>
+			{error && (
+				<div>
+					<p>{error.message}</p>
+					<button type="button" onClick={() => setError(null)}>
+						Ok
+					</button>
+				</div>
+			)}
+			{!error && (
+				<ol>
+					{updatedTasks.map((task) => (
+						<TodoItem
+							key={task.id}
+							task={task}
+							onSubmittingEditTask={triggerFunc}
+						/>
+					))}
+				</ol>
+			)}
+		</>
 	);
 }
