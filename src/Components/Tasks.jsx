@@ -8,7 +8,7 @@ export default function Tasks({ filter, someProps }) {
 	//filter из FilterButtons, someProprs - триггер для обновления UI, нужен пропс ошибки, чтобы передать родителю инфу о том, что возникла ошибка и вывести ее модалкой
 	const [updatedTasks, setUpdatedTasks] = useState([]);
 	const [error, setError] = useState(null);
-	const [trigger, setTrigger] = useState(false);
+	const [trigger, setTrigger] = useState(false); //здесь надо как-то решить с триггером для перерендера UI
 
 	useEffect(() => {
 		async function fetchingTasks() {

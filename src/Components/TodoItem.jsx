@@ -4,6 +4,7 @@ import EditIcon from "../assets/EditIcon";
 import { editTask, deleteTask } from "../API/FetchingFunctions";
 
 export default function TodoItem({ task, onSubmittingEditTask }) {
+	//изменить название onSubmittingEditTask, потому что функция будет экзекутироваться в 3х http-запросах
 	const [isEditing, setIsEditing] = useState(false);
 	const [userInput, setUserInput] = useState("");
 	const [error, setError] = useState(null);
@@ -31,6 +32,7 @@ export default function TodoItem({ task, onSubmittingEditTask }) {
 
 	async function handleUserSubmit(event, task) {
 		event.preventDefault();
+		console.log(task);
 
 		try {
 			await editTask(task);

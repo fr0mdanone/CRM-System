@@ -52,7 +52,6 @@ export async function deleteTask(id) {
 }
 
 export async function editTask(task) {
-	console.log(task);
 	const dataToSend = {
 		title: task.title,
 		isDone: task.isDone,
@@ -75,5 +74,6 @@ export async function editTask(task) {
 		}
 	}
 	const resData = await response.json();
+	console.log(resData);
 	return resData;
 }
