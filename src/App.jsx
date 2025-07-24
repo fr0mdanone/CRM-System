@@ -31,7 +31,9 @@ function App() {
 
 	return (
 		<>
-			{error && <ErrorModal errorObject={error} />}
+			{error && (
+				<ErrorModal errorObject={error} onErrorConfirm={() => setError(null)} />
+			)}
 			{!error && (
 				<div>
 					<AddUserTask
