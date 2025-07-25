@@ -1,3 +1,5 @@
+import styles from "./TodoItem.module.scss";
+
 import { useState } from "react";
 import DeleteIcon from "../assets/DeleteIcon";
 import EditIcon from "../assets/EditIcon";
@@ -5,7 +7,7 @@ import { editTask, deleteTask } from "../API/FetchingFunctions";
 
 export default function TodoItem({ task, onAnyChanges, onError }) {
 	const [isEditing, setIsEditing] = useState(false);
-	const [userInput, setUserInput] = useState("");
+	const [userInput, setUserInput] = useState(task.title);
 
 	function handleUserInput(event) {
 		setUserInput(event.target.value);
@@ -42,7 +44,7 @@ export default function TodoItem({ task, onAnyChanges, onError }) {
 			onError(error);
 		} finally {
 			setIsEditing(false);
-			setUserInput("");
+			setUserInput(task.title);
 			onAnyChanges();
 		}
 	}
@@ -50,36 +52,66 @@ export default function TodoItem({ task, onAnyChanges, onError }) {
 	console.log("isEditing is ", isEditing);
 
 	return (
-		<li>
+		<>
 			{!isEditing && (
-				<div>
-					<div>
+				<li className={styles.listItem}>
+					<div className={styles.task}>
 						<input
 							type="checkbox"
 							checked={task.isDone}
 							onChange={() => handleToggle(task)}
+							className={styles.checkbox}
 						/>
-						<p>{task.title}</p>
+						<p
+							className={`${styles.title} ${
+								task.isDone === true ? styles.isDone : ""
+							}`}
+						>
+							{task.title}
+						</p>
 					</div>
-					<div>
-						<button>
+					<div className={styles.buttonsContainer}>
+						<button className={`${styles.delete} ${styles.button}`}>
 							<DeleteIcon onClick={() => handleDeleteTask(task.id)} />
 						</button>
-						<button>
+						<button className={`${styles.edit} ${styles.button}`}>
 							<EditIcon onClick={() => setIsEditing(true)} />
 						</button>
 					</div>
-				</div>
+				</li>
 			)}
 			{isEditing && (
-				<form onSubmit={(event) => handleUserSubmit(event, task)}>
-					<input type="text" value={userInput} onChange={handleUserInput} />
-					<button type="submit">Save</button>
-					<button type="button" onClick={() => setIsEditing(false)}>
-						Cancel
-					</button>
+				<form
+					onSubmit={(event) => handleUserSubmit(event, task)}
+					className={styles.listItem}
+				>
+					<input
+						type="text"
+						required
+						minLength={2}
+						maxLength={64}
+						defaultValue={task.title}
+						value={userInput}
+						onChange={handleUserInput}
+						className={styles.input}
+					/>
+					<div className={styles.buttonsContainer}>
+						<button type="submit" className={`${styles.button} ${styles.save}`}>
+							Save
+						</button>
+						<button
+							type="button"
+							onClick={() => {
+								setIsEditing(false);
+								setUserInput(task.title);
+							}}
+							className={`${styles.button} ${styles.cancel}`}
+						>
+							Cancel
+						</button>
+					</div>
 				</form>
 			)}
-		</li>
+		</>
 	);
 }

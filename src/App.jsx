@@ -1,6 +1,7 @@
 import AddUserTask from "./Components/AddUserTask";
 import Tasks from "./Components/Tasks";
 import FilterButtons from "./Components/FilterButtons";
+import ErrorModal from "./Components/ErrorModal";
 
 import "./App.scss";
 import { useState, useEffect } from "react";
@@ -34,26 +35,24 @@ function App() {
 			{error && (
 				<ErrorModal errorObject={error} onErrorConfirm={() => setError(null)} />
 			)}
-			{!error && (
-				<div>
-					<AddUserTask
-						onError={setError}
-						onAddTask={() => setForceUpdate((prev) => !prev)}
+			<div className="flexContainer">
+				<AddUserTask
+					onError={setError}
+					onAddTask={() => setForceUpdate((prev) => !prev)}
+				/>
+				<section>
+					<FilterButtons
+						todoInfo={todoInfo}
+						filter={filter}
+						onSetFilters={setFilter}
 					/>
-					<section>
-						<FilterButtons
-							todoInfo={todoInfo}
-							filter={filter}
-							onSetFilters={setFilter}
-						/>
-						<Tasks
-							tasks={updatedTodos}
-							onUpdateTodos={() => setForceUpdate((prev) => !prev)}
-							onError={setError}
-						/>
-					</section>
-				</div>
-			)}
+					<Tasks
+						tasks={updatedTodos}
+						onUpdateTodos={() => setForceUpdate((prev) => !prev)}
+						onError={setError}
+					/>
+				</section>
+			</div>
 		</>
 	);
 }

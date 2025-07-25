@@ -1,3 +1,5 @@
+import styles from "./AddUserTask.module.scss";
+
 import { addTask } from "../API/FetchingFunctions";
 import { useState } from "react";
 
@@ -29,8 +31,9 @@ export default function AddUserTask({ onError, onAddTask }) {
 	}
 
 	return (
-		<form onSubmit={addUserTask}>
+		<form onSubmit={addUserTask} className={styles.form}>
 			<input
+				className={styles.input}
 				type="text"
 				onChange={handleUserInput}
 				value={userInput}
@@ -39,7 +42,7 @@ export default function AddUserTask({ onError, onAddTask }) {
 				maxLength={64}
 				placeholder="Task to be done..."
 			/>
-			<button type="submit" disabled={isFetching}>
+			<button className={styles.button} type="submit" disabled={isFetching}>
 				Добавить задачу
 			</button>
 		</form>

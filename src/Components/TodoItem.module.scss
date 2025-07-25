@@ -1,0 +1,63 @@
+.listItem,
+.task,
+.buttonsContainer {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.listItem {
+	max-width: 500px;
+	width: 100%;
+	margin: 0 0 10px 20px;
+	justify-content: space-between;
+	background-color: white;
+	min-height: 60px;
+	padding: 20px;
+}
+
+.task {
+	width: 60%;
+}
+
+.title {
+	max-width: 100%;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	white-space: normal;
+	font-size: 1.3em;
+	font-weight: semi-bold;
+}
+
+.buttonsContainer {
+	flex-direction: row-reverse;
+}
+
+.button {
+	padding: 10px;
+	border-radius: 8px;
+}
+
+.delete,
+.cancel {
+	background-color: var(--main-red);
+}
+
+.edit,
+.save {
+	background-color: var(--main-blue);
+}
+
+.input {
+	border-bottom: 1px solid var(--primary-gray);
+	font-size: 1.3em;
+}
+
+.isDone {
+	color: var(--primary-gray);
+	text-decoration: line-through;
+}
+
+.checkbox {
+	border-radius: 10px;
+}

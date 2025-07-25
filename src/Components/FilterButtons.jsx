@@ -1,3 +1,5 @@
+import styles from "./FilterButtons.module.scss";
+
 export default function FilterButtons({ onSetFilters, todoInfo, filter }) {
 	return (
 		<ul className={styles.flexContainer}>
@@ -5,7 +7,9 @@ export default function FilterButtons({ onSetFilters, todoInfo, filter }) {
 				<button
 					id="all"
 					onClick={(event) => onSetFilters(event.target.id)}
-					className={filter === "all" ? "active" : ""}
+					className={`${styles.button} ${
+						filter === "all" ? `${styles.active}` : ""
+					}`}
 				>
 					{`Все (${todoInfo.all ?? "Загружается..."})`}
 				</button>
@@ -14,7 +18,9 @@ export default function FilterButtons({ onSetFilters, todoInfo, filter }) {
 				<button
 					id="inWork"
 					onClick={(event) => onSetFilters(event.target.id)}
-					className={filter === "inWork" ? "active" : ""}
+					className={`${styles.button} ${
+						filter === "inWork" ? `${styles.active}` : ""
+					}`}
 				>
 					{`В работе (${todoInfo.inWork ?? "Загружается..."})`}
 				</button>
@@ -23,7 +29,9 @@ export default function FilterButtons({ onSetFilters, todoInfo, filter }) {
 				<button
 					id="completed"
 					onClick={(event) => onSetFilters(event.target.id)}
-					className={filter === "completed" ? "active" : ""}
+					className={`${styles.button} ${
+						filter === "completed" ? `${styles.active}` : ""
+					}`}
 				>
 					{`Завершено (${todoInfo.completed ?? "Загружается..."})`}
 				</button>

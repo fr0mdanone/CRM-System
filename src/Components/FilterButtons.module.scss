@@ -1,0 +1,16 @@
+.flexContainer {
+	display: flex;
+	gap: 40px;
+	margin: 0 0 20px 20px;
+}
+
+.button {
+	color: var(--primary-gray);
+	font-size: 25px;
+	font-weight: bold;
+}
+
+.active {
+	border-bottom: 4px solid var(--main-blue);
+	color: var(--main-blue);
+}
