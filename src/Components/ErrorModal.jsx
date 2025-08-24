@@ -1,18 +1,23 @@
 import styles from "./ErrorModal.module.scss";
 
-export default function ErrorModal({ error, onErrorConfirm }) {
+export default function ErrorModal({ errorObject, onErrorConfirm }) {
 	return (
-		<div className="backdrop" onClick={() => onErrorConfirm()}>
-			<div
-				className={`${styles.container} modal-window`}
-				onClick={(event) => event.stopPropagation()}
-			>
-				<h2>An error occured!</h2>
-				<p>{error.message}</p>
-				<button className={`${styles.button}`} onClick={() => onErrorConfirm()}>
-					Ok
-				</button>
+		<>
+			<div onClick={() => onErrorConfirm()} className="backdrop">
+				<div
+					onClick={(event) => event.stopPropagation()}
+					className={`${styles.container} modal-window`}
+				>
+					<h2>An error occured!</h2>
+					<p>{errorObject.message}</p>
+					<button
+						onClick={() => onErrorConfirm()}
+						className={`${styles.button}`}
+					>
+						Ok
+					</button>
+				</div>
 			</div>
-		</div>
+		</>
 	);
 }

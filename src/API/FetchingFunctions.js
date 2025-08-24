@@ -74,5 +74,6 @@ export async function editTask(task) {
 		}
 	}
 	const resData = await response.json();
+	console.log(resData);
 	return resData;
 }

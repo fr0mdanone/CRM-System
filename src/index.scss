@@ -119,6 +119,7 @@ input[type="file"] {
 	--main-red: #fe6756;
 	--main-blue: #5292fe;
 	--main-gray: #f1f4f9;
+	--primary-gray: #a19a9a;
 }
 
 body {
@@ -136,7 +137,7 @@ h1 {
 	color: var(--main-blue);
 }
 
-.flex-container {
+.flexСontainer {
 	display: flex;
 	gap: 0.5rem;
 	padding-left: 20px;

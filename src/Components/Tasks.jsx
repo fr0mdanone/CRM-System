@@ -1,48 +1,16 @@
-import styles from "./Tasks.module.scss";
-import DeleteIcon from "../assets/DeleteIcon";
-import EditIcon from "../assets/EditIcon";
+import TodoItem from "./TodoItem";
 
-export default function Tasks({ tasks, onDelete, onEdit, onToggle }) {
-	function handleEditButton(task) {
-		onEdit(task);
-	}
-	function handleDeleteButton(id) {
-		onDelete(id);
-	}
-
+export default function Tasks({ tasks, onError, onUpdateTodos }) {
 	return (
-		<>
-			<ol>
-				{tasks.map((task) => (
-					<li
-						className={`${styles.flexContainer} ${styles.tasksItem}`}
-						key={task.id}
-					>
-						<div className={`${styles.taskCheckbox}`}>
-							<input
-								type="checkbox"
-								checked={task.isDone}
-								onChange={() => onToggle(task)}
-							/>
-							<p className={`${styles.taskTitle}`}>{task.title}</p>
-						</div>
-						<div className={`${styles.buttons}`}>
-							<button
-								onClick={() => handleDeleteButton(task.id)}
-								className={`${styles.button} ${styles.delete}`}
-							>
-								<DeleteIcon />
-							</button>
-							<button
-								onClick={() => handleEditButton(task)}
-								className={`${styles.button} ${styles.edit}`}
-							>
-								<EditIcon />
-							</button>
-						</div>
-					</li>
-				))}
-			</ol>
-		</>
+		<ol>
+			{tasks.map((task) => (
+				<TodoItem
+					key={task.id}
+					task={task}
+					onError={onError}
+					onAnyChanges={onUpdateTodos}
+				/>
+			))}
+		</ol>
 	);
 }

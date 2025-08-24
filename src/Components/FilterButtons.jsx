@@ -1,36 +1,40 @@
 import styles from "./FilterButtons.module.scss";
 
-import Button from "../UI/Button";
-
-export default function FilterButtons({ onClick, filter, info }) {
+export default function FilterButtons({ onSetFilters, todoInfo, filter }) {
 	return (
-		<ul className={`${styles.flexContainer}`}>
+		<ul className={styles.flexContainer}>
 			<li>
-				<Button
+				<button
 					id="all"
-					onClick={(event) => onClick(event.target.id)}
-					isActive={filter === "all"}
+					onClick={(event) => onSetFilters(event.target.id)}
+					className={`${styles.button} ${
+						filter === "all" ? `${styles.active}` : ""
+					}`}
 				>
-					{`Все (${info.all ?? "Загружается..."})`}
-				</Button>
+					{`Все (${todoInfo.all ?? "Загружается..."})`}
+				</button>
 			</li>
 			<li>
-				<Button
-					id="completed"
-					onClick={(event) => onClick(event.target.id)}
-					isActive={filter === "completed"}
-				>
-					{`Выполнено (${info.completed ?? "Загружается..."})`}
-				</Button>
-			</li>
-			<li>
-				<Button
+				<button
 					id="inWork"
-					onClick={(event) => onClick(event.target.id)}
-					isActive={filter === "inWork"}
+					onClick={(event) => onSetFilters(event.target.id)}
+					className={`${styles.button} ${
+						filter === "inWork" ? `${styles.active}` : ""
+					}`}
 				>
-					{`В работе (${info.inWork ?? "Загружается..."})`}
-				</Button>
+					{`В работе (${todoInfo.inWork ?? "Загружается..."})`}
+				</button>
+			</li>
+			<li>
+				<button
+					id="completed"
+					onClick={(event) => onSetFilters(event.target.id)}
+					className={`${styles.button} ${
+						filter === "completed" ? `${styles.active}` : ""
+					}`}
+				>
+					{`Завершено (${todoInfo.completed ?? "Загружается..."})`}
+				</button>
 			</li>
 		</ul>
 	);

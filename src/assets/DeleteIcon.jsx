@@ -5,19 +5,13 @@ const DeleteIcon = (props) => (
 		viewBox="0 -0.5 21 21"
 		version="1.1"
 		xmlns="http://www.w3.org/2000/svg"
-		xmlns:xlink="http://www.w3.org/1999/xlink"
+		xmlnsXlink="http://www.w3.org/1999/xlink"
 		{...props}
 	>
 		<title>delete [#1487]</title>
 		<desc>Created with Sketch.</desc>
 		<defs></defs>
-		<g
-			id="Page-1"
-			stroke="none"
-			stroke-width="1"
-			fill="none"
-			fill-rule="evenodd"
-		>
+		<g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
 			<g
 				id="Dribbble-Light-Preview"
 				transform="translate(-179.000000, -360.000000)"
