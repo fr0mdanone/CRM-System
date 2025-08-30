@@ -1,4 +1,6 @@
-const DeleteIcon = (props) => (
+import { SVGElement } from "../types/types";
+
+const DeleteIcon = (props: SVGElement) => (
 	<svg
 		width="24px"
 		height="24px"

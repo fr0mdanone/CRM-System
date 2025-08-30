@@ -1,17 +1,22 @@
 import styles from "./AddUserTask.module.scss";
 
 import { addTask } from "../API/FetchingFunctions";
-import { useState } from "react";
+import { FormEvent, useState, ChangeEvent } from "react";
 
-export default function AddUserTask({ onError, onAddTask }) {
+interface AddUserTaskProps {
+	onError: (error: unknown) => void;
+	onAddTask: () => void;
+}
+
+export default function AddUserTask({ onError, onAddTask }: AddUserTaskProps) {
 	const [userInput, setUserInput] = useState("");
 	const [isFetching, setIsFetching] = useState(false);
 
-	function handleUserInput(event) {
-		setUserInput(event.target.value);
+	function handleUserInput(event: ChangeEvent<HTMLInputElement>): void {
+		setUserInput(event.currentTarget.value);
 	}
 
-	async function addUserTask(event) {
+	async function addUserTask(event: FormEvent<HTMLFormElement>): Promise<void> {
 		event.preventDefault();
 		setIsFetching(true);
 		try {
@@ -41,6 +46,7 @@ export default function AddUserTask({ onError, onAddTask }) {
 				minLength={2}
 				maxLength={64}
 				placeholder="Task to be done..."
+				disabled={isFetching}
 			/>
 			<button className={styles.button} type="submit" disabled={isFetching}>
 				Добавить задачу

@@ -1,19 +1,30 @@
 import styles from "./TodoItem.module.scss";
 
-import { useState } from "react";
+import { ChangeEvent, FormEvent, useState } from "react";
 import DeleteIcon from "../assets/DeleteIcon";
 import EditIcon from "../assets/EditIcon";
 import { editTask, deleteTask } from "../API/FetchingFunctions";
+import { Todo } from "../types/types";
 
-export default function TodoItem({ task, onAnyChanges, onError }) {
+interface TodoItemProps {
+	task: Todo;
+	onAnyChanges: () => void;
+	onError: (error: unknown) => void;
+}
+
+export default function TodoItem({
+	task,
+	onAnyChanges,
+	onError,
+}: TodoItemProps) {
 	const [isEditing, setIsEditing] = useState(false);
 	const [userInput, setUserInput] = useState(task.title);
 
-	function handleUserInput(event) {
-		setUserInput(event.target.value);
+	function handleUserInput(event: ChangeEvent<HTMLInputElement>) {
+		setUserInput(event.currentTarget.value);
 	}
 
-	async function handleToggle(task) {
+	async function handleToggle(task: Todo) {
 		const updatedTask = { ...task, isDone: !task.isDone };
 		try {
 			await editTask(updatedTask);
@@ -24,7 +35,7 @@ export default function TodoItem({ task, onAnyChanges, onError }) {
 		}
 	}
 
-	async function handleDeleteTask(id) {
+	async function handleDeleteTask(id: number) {
 		try {
 			await deleteTask(id);
 		} catch (error) {
@@ -34,7 +45,10 @@ export default function TodoItem({ task, onAnyChanges, onError }) {
 		}
 	}
 
-	async function handleUserSubmit(event, task) {
+	async function handleUserSubmit(
+		event: FormEvent<HTMLFormElement>,
+		task: Todo
+	) {
 		event.preventDefault();
 		task.title = userInput;
 

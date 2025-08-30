@@ -1,6 +1,14 @@
 import styles from "./ErrorModal.module.scss";
 
-export default function ErrorModal({ errorObject, onErrorConfirm }) {
+interface ErrorModalProps {
+	errorObject: Error;
+	onErrorConfirm: () => void;
+}
+
+export default function ErrorModal({
+	errorObject,
+	onErrorConfirm,
+}: ErrorModalProps) {
 	return (
 		<>
 			<div onClick={() => onErrorConfirm()} className="backdrop">

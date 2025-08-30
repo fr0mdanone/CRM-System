@@ -1,4 +1,6 @@
-const EditIcon = (props) => (
+import { SVGElement } from "../types/types";
+
+const EditIcon = (props: SVGElement) => (
 	<svg
 		width="24px"
 		height="24px"
