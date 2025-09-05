@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom/client";
 import "./index.scss";
-import TodoApp from "./pages/TodoApp";
+import App from "./App";
 
-createRoot(document.getElementById("root")!).render(<TodoApp />);
+createRoot(document.getElementById("root")!).render(<App />);

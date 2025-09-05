@@ -1,24 +1,30 @@
 import TodoItem from "./TodoItem";
 
-import { Todo } from "../types/types";
+import { Todo } from "../api/todos.types";
 
 interface TodosProps {
 	onError: (error: unknown) => void;
 	onUpdateTodos: () => void;
-	tasks: Array<Todo>;
+	todos: Array<Todo>;
 }
 
-export default function Todos({ tasks, onError, onUpdateTodos }: TodosProps) {
+const Todos: React.FC<TodosProps> = ({
+	todos,
+	onError,
+	onUpdateTodos,
+}: TodosProps) => {
 	return (
-		<ol>
-			{tasks.map((task) => (
+		<ul>
+			{todos.map((todo) => (
 				<TodoItem
-					key={task.id}
-					task={task}
+					key={todo.id}
+					todo={todo}
 					onError={onError}
-					onAnyChanges={onUpdateTodos}
+					onUpdateTodos={onUpdateTodos}
 				/>
 			))}
-		</ol>
+		</ul>
 	);
-}
+};
+
+export default Todos;

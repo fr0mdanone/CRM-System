@@ -1,6 +1,6 @@
-import { SVGElement } from "../types/types";
+import { SVGProps } from "../utils/types/ui";
 
-const EditIcon = (props: SVGElement) => (
+const EditIcon: React.FC<SVGProps> = (props) => (
 	<svg
 		width="24px"
 		height="24px"

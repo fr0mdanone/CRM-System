@@ -24,6 +24,9 @@ export interface MetaResponse<T, N> {
 	};
 }
 
-export type Filter = "all" | "inWork" | "completed";
+export interface AddTodoData {
+	title: string;
+	isDone: boolean;
+}
 
-export type SVGElement = React.SVGProps<SVGSVGElement>;
+export type Filter = "all" | "inWork" | "completed";

@@ -1,131 +1,162 @@
 import styles from "./TodoItem.module.scss";
 
+import { validateTodoTitle } from "../utils/validators/todos";
 import { ChangeEvent, FormEvent, useState } from "react";
 import DeleteIcon from "../assets/DeleteIcon";
 import EditIcon from "../assets/EditIcon";
-import { editTask, deleteTask } from "../API/FetchingFunctions";
-import { Todo } from "../types/types";
+import SaveIcon from "../assets/SaveIcon";
+import { editTodo, deleteTodo } from "../api/todos";
+import { Todo } from "../api/todos.types";
+import CancelIcon from "../assets/CancelIcon";
 
 interface TodoItemProps {
-	task: Todo;
-	onAnyChanges: () => void;
+	todo: Todo;
+	onUpdateTodos: () => void;
 	onError: (error: unknown) => void;
 }
 
-export default function TodoItem({
-	task,
-	onAnyChanges,
+const TodoItem: React.FC<TodoItemProps> = ({
+	todo,
+	onUpdateTodos,
 	onError,
-}: TodoItemProps) {
-	const [isEditing, setIsEditing] = useState(false);
-	const [userInput, setUserInput] = useState(task.title);
+}) => {
+	const [isEditing, setIsEditing] = useState<boolean>(false);
+	const [todoTitle, setTodoTitle] = useState<string>(todo.title);
+	const [isValid, setIsValid] = useState<boolean>(true);
+	const [isFetching, setIsFetching] = useState<boolean>(false);
 
 	function handleUserInput(event: ChangeEvent<HTMLInputElement>) {
-		setUserInput(event.currentTarget.value);
+		setTodoTitle(event.currentTarget.value);
+		setIsValid(true);
 	}
 
-	async function handleToggle(task: Todo) {
-		const updatedTask = { ...task, isDone: !task.isDone };
+	async function handleToggle(todo: Todo) {
+		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
 		try {
-			await editTask(updatedTask);
+			setIsFetching(true);
+			await editTodo(updatedTodo);
 		} catch (error) {
 			onError(error);
 		} finally {
-			onAnyChanges();
+			onUpdateTodos();
+			setIsFetching(false);
 		}
 	}
 
-	async function handleDeleteTask(id: number) {
+	async function handleDeleteTodo(id: number) {
 		try {
-			await deleteTask(id);
+			setIsFetching(true);
+			await deleteTodo(id);
 		} catch (error) {
 			onError(error);
 		} finally {
-			onAnyChanges();
+			onUpdateTodos();
+			setIsFetching(false);
 		}
 	}
 
-	async function handleUserSubmit(
-		event: FormEvent<HTMLFormElement>,
-		task: Todo
-	) {
+	async function handleEditTodo(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
-		task.title = userInput;
-
-		try {
-			await editTask(task);
-		} catch (error) {
-			onError(error);
-		} finally {
-			setIsEditing(false);
-			setUserInput(task.title);
-			onAnyChanges();
+		if (validateTodoTitle(todoTitle)) {
+			todo.title = todoTitle.trim();
+			try {
+				setIsFetching(true);
+				await editTodo(todo);
+			} catch (error) {
+				onError(error);
+			} finally {
+				setIsEditing(false);
+				setTodoTitle(todo.title);
+				onUpdateTodos();
+				setIsFetching(false);
+			}
+		} else {
+			setIsValid(false);
 		}
 	}
 
-	console.log("isEditing is ", isEditing);
+	function handleCancel() {
+		setIsEditing(false);
+		setTodoTitle(todo.title);
+	}
 
 	return (
 		<>
 			{!isEditing && (
 				<li className={styles.listItem}>
-					<div className={styles.task}>
+					<div className={styles.todo}>
 						<input
 							type="checkbox"
-							checked={task.isDone}
-							onChange={() => handleToggle(task)}
+							checked={todo.isDone}
+							onChange={() => handleToggle(todo)}
 							className={styles.checkbox}
+							disabled={isFetching}
 						/>
 						<p
 							className={`${styles.title} ${
-								task.isDone === true ? styles.isDone : ""
+								todo.isDone === true ? styles.isDone : ""
 							}`}
 						>
-							{task.title}
+							{todo.title}
 						</p>
 					</div>
 					<div className={styles.buttonsContainer}>
-						<button className={`${styles.delete} ${styles.button}`}>
-							<DeleteIcon onClick={() => handleDeleteTask(task.id)} />
+						<button
+							className={`${styles.delete} ${styles.button}`}
+							onClick={() => handleDeleteTodo(todo.id)}
+							disabled={isFetching}
+						>
+							<DeleteIcon />
 						</button>
-						<button className={`${styles.edit} ${styles.button}`}>
-							<EditIcon onClick={() => setIsEditing(true)} />
+						<button
+							className={`${styles.edit} ${styles.button}`}
+							onClick={() => setIsEditing(true)}
+							disabled={isFetching}
+						>
+							<EditIcon />
 						</button>
 					</div>
 				</li>
 			)}
 			{isEditing && (
-				<form
-					onSubmit={(event) => handleUserSubmit(event, task)}
-					className={styles.listItem}
-				>
-					<input
-						type="text"
-						required
-						minLength={2}
-						maxLength={64}
-						defaultValue={task.title}
-						value={userInput}
-						onChange={handleUserInput}
-						className={styles.input}
-					/>
-					<div className={styles.buttonsContainer}>
-						<button type="submit" className={`${styles.button} ${styles.save}`}>
-							Save
-						</button>
-						<button
-							type="button"
-							onClick={() => {
-								setIsEditing(false);
-								setUserInput(task.title);
-							}}
-							className={`${styles.button} ${styles.cancel}`}
-						>
-							Cancel
-						</button>
-					</div>
-				</form>
+				<div className={styles.container}>
+					<form onSubmit={handleEditTodo} className={styles.form}>
+						<input
+							type="text"
+							required
+							// defaultValue={todo.title}
+							value={todoTitle}
+							onChange={handleUserInput}
+							className={`${styles.input} ${!isValid ? styles.warning : ""}`}
+							disabled={isFetching}
+						/>
+						<div className={styles.buttonsContainer}>
+							<button
+								type="button"
+								onClick={handleCancel}
+								className={`${styles.button} ${styles.cancel}`}
+								disabled={isFetching}
+							>
+								<CancelIcon />
+							</button>
+							<button
+								type="submit"
+								className={`${styles.button} ${styles.save}`}
+								disabled={isFetching}
+							>
+								<SaveIcon />
+							</button>
+						</div>
+					</form>
+					{!isValid && (
+						<p className={styles.warning}>
+							Текст задачи должен быть от 2 до 64 символов
+						</p>
+					)}
+				</div>
 			)}
 		</>
 	);
-}
+};
+
+export default TodoItem;

@@ -4,14 +4,14 @@ import {
 	Todo,
 	MetaResponse,
 	TodoInfo,
-} from "../types/types";
+} from "./todos.types";
 
-export async function getTasks(
-	status: Filter
+import { BASE_URL } from "../constants/todos.constants";
+
+export async function getTodos(
+	filter: Filter
 ): Promise<MetaResponse<Todo, TodoInfo>> {
-	const response = await fetch(
-		`https://easydev.club/api/v1/todos?filter=${status}`
-	);
+	const response = await fetch(`${BASE_URL}/todos?filter=${filter}`);
 
 	if (!response.ok) {
 		throw new Error(
@@ -22,8 +22,8 @@ export async function getTasks(
 	return resData;
 }
 
-export async function addTask(userData: TodoRequest): Promise<Todo> {
-	const response = await fetch("https://easydev.club/api/v1/todos", {
+export async function addTodo(userData: TodoRequest): Promise<Todo> {
+	const response = await fetch(`${BASE_URL}/todos`, {
 		method: "POST",
 		body: JSON.stringify(userData),
 		headers: {
@@ -42,31 +42,31 @@ export async function addTask(userData: TodoRequest): Promise<Todo> {
 	return resData;
 }
 
-export async function deleteTask(id: number): Promise<void> {
-	const response = await fetch(`https://easydev.club/api/v1/todos/${id}`, {
+export async function deleteTodo(id: number): Promise<void> {
+	const response = await fetch(`${BASE_URL}/todos/${id}`, {
 		method: "DELETE",
 	});
 
 	if (!response.ok) {
 		if (response.status === 404) {
-			throw new Error("Не удалось удалить задачу. Попробуйте позже");
+			throw new Error("Не удалось удалить задачу. Задача не найдена.");
 		} else if (response.status >= 400) {
 			throw new Error(
 				"Не удалось удалить задачу. Неверный или несуществующий ID задачи."
 			);
 		} else if (response.status >= 500) {
-			throw new Error("Не удалось удалить задачу. Задача не найдена.");
+			throw new Error("Не удалось удалить задачу. Попробуйте позже.");
 		}
 	}
 	return;
 }
 
-export async function editTask(task: Todo): Promise<Todo> {
+export async function editTodo(task: Todo): Promise<Todo> {
 	const dataToSend = {
 		title: task.title,
 		isDone: task.isDone,
 	};
-	const response = await fetch(`https://easydev.club/api/v1/todos/${task.id}`, {
+	const response = await fetch(`${BASE_URL}/todos/${task.id}`, {
 		method: "PUT",
 		body: JSON.stringify(dataToSend),
 		headers: {
@@ -75,12 +75,13 @@ export async function editTask(task: Todo): Promise<Todo> {
 	});
 
 	if (!response.ok) {
+		console.log(response.status);
 		if (response.status === 400) {
-			throw new Error("Не удалось изменить задачу. Попробуйте позже.");
+			throw new Error("Не удалось изменить задачу. Проверьте данные.");
 		} else if (response.status === 404) {
 			throw new Error("Не удалось изменить задачу. Задача не найдена.");
 		} else if (response.status >= 500) {
-			throw new Error("Не удалось изменить задачу. Проверьте данные.");
+			throw new Error("Не удалось изменить задачу. Попробуйте позже.");
 		}
 	}
 	const resData: Todo = await response.json();

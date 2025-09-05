@@ -1,6 +1,6 @@
-import { SVGElement } from "../types/types";
+import { SVGProps } from "../utils/types/ui";
 
-const DeleteIcon = (props: SVGElement) => (
+const DeleteIcon: React.FC<SVGProps> = (props) => (
 	<svg
 		width="24px"
 		height="24px"

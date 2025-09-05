@@ -1,23 +1,23 @@
 import styles from "./ErrorModal.module.scss";
 
 interface ErrorModalProps {
-	errorObject: Error;
+	errorMessage: string;
 	onErrorConfirm: () => void;
 }
 
-export default function ErrorModal({
-	errorObject,
+const ErrorModal: React.FC<ErrorModalProps> = ({
+	errorMessage,
 	onErrorConfirm,
-}: ErrorModalProps) {
+}: ErrorModalProps) => {
 	return (
 		<>
-			<div onClick={() => onErrorConfirm()} className="backdrop">
+			<div onClick={() => onErrorConfirm()} className={styles.backdrop}>
 				<div
 					onClick={(event) => event.stopPropagation()}
-					className={`${styles.container} modal-window`}
+					className={`${styles.container} ${styles.modal}`}
 				>
 					<h2>An error occured!</h2>
-					<p>{errorObject.message}</p>
+					<p>{errorMessage}</p>
 					<button
 						onClick={() => onErrorConfirm()}
 						className={`${styles.button}`}
@@ -28,4 +28,6 @@ export default function ErrorModal({
 			</div>
 		</>
 	);
-}
+};
+
+export default ErrorModal;
