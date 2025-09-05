@@ -47,10 +47,7 @@ const TodoPage: React.FC = () => {
 			<div className={styles.container}>
 				{!isFetching && (
 					<main>
-						<AddUserTodo
-							onError={() => setError(error)}
-							onAddTodo={fetchingTodos}
-						/>
+						<AddUserTodo onError={setError} onAddTodo={fetchingTodos} />
 						<section>
 							<FilterButtons
 								todoInfo={todoInfo}
@@ -60,7 +57,7 @@ const TodoPage: React.FC = () => {
 							<Todos
 								todos={todos}
 								onUpdateTodos={fetchingTodos}
-								onError={() => setError(error)}
+								onError={setError}
 							/>
 						</section>
 					</main>

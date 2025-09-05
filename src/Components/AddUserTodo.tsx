@@ -7,7 +7,7 @@ import { addTodo } from "../api/todos";
 import { useState, ChangeEvent } from "react";
 
 interface AddUserTodoProps {
-	onError: (error: unknown) => void;
+	onError: (errorMessage: string) => void;
 	onAddTodo: () => void;
 }
 
@@ -39,8 +39,10 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 				await addTodo(userData);
 				setTodoTitle("");
 				onAddTodo();
-			} catch (error) {
-				onError(error);
+			} catch (error: unknown) {
+				if (error instanceof Error) {
+					onError(error.message);
+				}
 			} finally {
 				setIsFetching(false);
 			}

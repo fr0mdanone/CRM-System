@@ -3,7 +3,7 @@ import TodoItem from "./TodoItem";
 import { Todo } from "../api/todos.types";
 
 interface TodosProps {
-	onError: (error: unknown) => void;
+	onError: (errorMessage: string) => void;
 	onUpdateTodos: () => void;
 	todos: Array<Todo>;
 }

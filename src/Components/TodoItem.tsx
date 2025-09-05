@@ -12,7 +12,7 @@ import CancelIcon from "../assets/CancelIcon";
 interface TodoItemProps {
 	todo: Todo;
 	onUpdateTodos: () => void;
-	onError: (error: unknown) => void;
+	onError: (errorMessage: string) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
@@ -36,8 +36,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		try {
 			setIsFetching(true);
 			await editTodo(updatedTodo);
-		} catch (error) {
-			onError(error);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				onError(error.message);
+			}
 		} finally {
 			onUpdateTodos();
 			setIsFetching(false);
@@ -48,8 +50,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		try {
 			setIsFetching(true);
 			await deleteTodo(id);
-		} catch (error) {
-			onError(error);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				onError(error.message);
+			}
 		} finally {
 			onUpdateTodos();
 			setIsFetching(false);
@@ -63,8 +67,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			try {
 				setIsFetching(true);
 				await editTodo(todo);
-			} catch (error) {
-				onError(error);
+			} catch (error: unknown) {
+				if (error instanceof Error) {
+					onError(error.message);
+				}
 			} finally {
 				setIsEditing(false);
 				setTodoTitle(todo.title);
