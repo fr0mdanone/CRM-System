@@ -6,12 +6,12 @@ import ErrorModal from "../components/ErrorModal";
 import styles from "./TodoPage.module.scss";
 import { useState, useEffect } from "react";
 import { getTodos } from "../api/todos";
-import { Todo, TodoInfo, Filter, MetaResponse } from "../api/todos.types";
+import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../api/todos.types";
 
 const TodoPage: React.FC = () => {
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
-	const [filter, setFilter] = useState<Filter>("all");
+	const [filter, setFilter] = useState<TodoFilter>("all");
 	const [todoInfo, setTodoInfo] = useState<TodoInfo>({
 		all: 0,
 		completed: 0,

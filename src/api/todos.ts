@@ -1,5 +1,5 @@
 import {
-	Filter,
+	TodoFilter,
 	TodoRequest,
 	Todo,
 	MetaResponse,
@@ -9,7 +9,7 @@ import {
 import { BASE_URL } from "../constants/todos.constants";
 
 export async function getTodos(
-	filter: Filter
+	filter: TodoFilter
 ): Promise<MetaResponse<Todo, TodoInfo>> {
 	const response = await fetch(`${BASE_URL}/todos?filter=${filter}`);
 

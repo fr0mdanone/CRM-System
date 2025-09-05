@@ -29,4 +29,4 @@ export interface AddTodoData {
 	isDone: boolean;
 }
 
-export type Filter = "all" | "inWork" | "completed";
+export type TodoFilter = "all" | "inWork" | "completed";

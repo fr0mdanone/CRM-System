@@ -1,11 +1,11 @@
 import styles from "./FilterButtons.module.scss";
 
-import { Filter, TodoInfo } from "../api/todos.types";
+import { TodoFilter, TodoInfo } from "../api/todos.types";
 
 interface FilterButtonsProps {
-	onSetFilter: (filter: Filter) => void;
+	onSetFilter: (filter: TodoFilter) => void;
 	todoInfo: TodoInfo;
-	filter: Filter;
+	filter: TodoFilter;
 }
 
 const FilterButtons: React.FC<FilterButtonsProps> = ({
@@ -13,7 +13,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 	todoInfo,
 	filter,
 }: FilterButtonsProps) => {
-	function isFilter(value: string): value is Filter {
+	function isFilter(value: string): value is TodoFilter {
 		return value === "all" || value === "inWork" || value === "completed";
 	}
 
@@ -31,7 +31,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 						filter === "all" ? styles.active : ""
 					}`}
 				>
-					{`Все (${todoInfo.all ?? "Загружается..."})`}
+					{`Все (${todoInfo.all})`}
 				</button>
 			</li>
 			<li>
@@ -41,7 +41,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 						filter === "inWork" ? styles.active : ""
 					}`}
 				>
-					{`В работе (${todoInfo.inWork ?? "Загружается..."})`}
+					{`В работе (${todoInfo.inWork})`}
 				</button>
 			</li>
 			<li>
@@ -51,7 +51,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 						filter === "completed" ? styles.active : ""
 					}`}
 				>
-					{`Завершено (${todoInfo.completed ?? "Загружается..."})`}
+					{`Завершено (${todoInfo.completed})`}
 				</button>
 			</li>
 		</ul>
