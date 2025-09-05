@@ -4,17 +4,17 @@
 	align-items: center;
 	gap: 20px;
 	border: 10px solid var(--main-red);
+}
 
-	h2 {
-		font-weight: bold;
-		font-size: 2rem;
-	}
+.errorTitle {
+	font-weight: bold;
+	font-size: 2rem;
+}
 
-	p {
-		color: var(--main-red);
-		font-weight: bold;
-		text-align: center;
-	}
+.errorMessage {
+	color: var(--main-red);
+	font-weight: bold;
+	text-align: center;
 }
 
 .button {

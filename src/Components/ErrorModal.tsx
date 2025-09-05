@@ -16,8 +16,8 @@ const ErrorModal: React.FC<ErrorModalProps> = ({
 					onClick={(event) => event.stopPropagation()}
 					className={`${styles.container} ${styles.modal}`}
 				>
-					<h2>An error occured!</h2>
-					<p>{errorMessage}</p>
+					<h2 className={styles.errorTitle}>An error occured!</h2>
+					<p className={styles.errorMessage}>{errorMessage}</p>
 					<button
 						onClick={() => onErrorConfirm()}
 						className={`${styles.button}`}
