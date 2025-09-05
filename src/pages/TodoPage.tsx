@@ -9,6 +9,7 @@ import { getTodos } from "../api/todos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../api/todos.types";
 
 const TodoPage: React.FC = () => {
+	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [filter, setFilter] = useState<TodoFilter>("all");
@@ -20,6 +21,7 @@ const TodoPage: React.FC = () => {
 
 	async function fetchingTodos(): Promise<void> {
 		try {
+			setIsFetching(true);
 			const response: MetaResponse<Todo, TodoInfo> = await getTodos(filter);
 
 			setTodos(response.data);
@@ -28,6 +30,8 @@ const TodoPage: React.FC = () => {
 			if (error instanceof Error) {
 				setError(error.message);
 			}
+		} finally {
+			setIsFetching(false);
 		}
 	}
 
@@ -41,22 +45,31 @@ const TodoPage: React.FC = () => {
 				<ErrorModal errorMessage={error} onErrorConfirm={() => setError("")} />
 			)}
 			<div className={styles.container}>
-				<AddUserTodo
-					onError={() => setError(error)}
-					onAddTodo={fetchingTodos}
-				/>
-				<section>
-					<FilterButtons
-						todoInfo={todoInfo}
-						filter={filter}
-						onSetFilter={setFilter}
-					/>
-					<Todos
-						todos={todos}
-						onUpdateTodos={fetchingTodos}
-						onError={() => setError(error)}
-					/>
-				</section>
+				{!isFetching && (
+					<main>
+						<AddUserTodo
+							onError={() => setError(error)}
+							onAddTodo={fetchingTodos}
+						/>
+						<section>
+							<FilterButtons
+								todoInfo={todoInfo}
+								filter={filter}
+								onSetFilter={setFilter}
+							/>
+							<Todos
+								todos={todos}
+								onUpdateTodos={fetchingTodos}
+								onError={() => setError(error)}
+							/>
+						</section>
+					</main>
+				)}
+				{isFetching && (
+					<p className={styles.isFetchingParagraph}>
+						Подождите, информация загружается
+					</p>
+				)}
 			</div>
 		</>
 	);
