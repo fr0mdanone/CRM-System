@@ -25,9 +25,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	const [isValid, setIsValid] = useState<boolean>(true);
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	function handleUserInput(event: ChangeEvent<HTMLInputElement>) {
-		setTodoTitle(event.currentTarget.value);
-		setIsValid(true);
+	function handleTodoTitleChange(event: ChangeEvent<HTMLInputElement>) {
+		const changedTitle = event.currentTarget.value;
+		setTodoTitle(changedTitle);
+		setIsValid(validateTodoTitle(changedTitle));
 	}
 
 	async function handleToggle(todo: Todo) {
@@ -126,7 +127,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 							required
 							// defaultValue={todo.title}
 							value={todoTitle}
-							onChange={handleUserInput}
+							onChange={handleTodoTitleChange}
 							className={`${styles.input} ${!isValid ? styles.warning : ""}`}
 							disabled={isFetching}
 						/>

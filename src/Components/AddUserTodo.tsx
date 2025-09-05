@@ -19,10 +19,10 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const [isValid, setIsValid] = useState<boolean>(true);
 
-	function handleUserInput(event: ChangeEvent<HTMLInputElement>): void {
-		const userInput = event.currentTarget.value;
-		setTodoTitle(userInput);
-		setIsValid(validateTodoTitle(userInput));
+	function handleNewTodoTitle(event: ChangeEvent<HTMLInputElement>): void {
+		const newTodoTitle = event.currentTarget.value;
+		setTodoTitle(newTodoTitle);
+		setIsValid(validateTodoTitle(newTodoTitle));
 	}
 
 	async function handleAddTodo(
@@ -55,7 +55,7 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 				<input
 					className={`${styles.input} ${!isValid ? styles.warning : ""}`}
 					type="text"
-					onChange={handleUserInput}
+					onChange={handleNewTodoTitle}
 					value={todoTitle}
 					required
 					placeholder="Task to be done..."
