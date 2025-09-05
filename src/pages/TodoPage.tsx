@@ -1,7 +1,7 @@
-import AddUserTodo from "../components/AddUserTodo";
-import Todos from "../components/Todos";
-import FilterButtons from "../components/FilterButtons";
-import ErrorModal from "../components/ErrorModal";
+import AddUserTodo from "../zaloopa/AddUserTodo";
+import Todos from "../zaloopa/Todos";
+import FilterButtons from "../zaloopa/FilterButtons";
+import ErrorModal from "../zaloopa/ErrorModal";
 
 import styles from "./TodoPage.module.scss";
 import { useState, useEffect } from "react";
