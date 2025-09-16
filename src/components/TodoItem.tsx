@@ -36,12 +36,12 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		try {
 			setIsFetching(true);
 			await editTodo(updatedTodo);
+			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				onError(error.message);
 			}
 		} finally {
-			onUpdateTodos();
 			setIsFetching(false);
 		}
 	}
@@ -50,12 +50,12 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		try {
 			setIsFetching(true);
 			await deleteTodo(id);
+			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
 				onError(error.message);
 			}
 		} finally {
-			onUpdateTodos();
 			setIsFetching(false);
 		}
 	}
@@ -63,18 +63,18 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	async function handleEditTodo(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 		if (validateTodoTitle(todoTitle)) {
-			todo.title = todoTitle.trim();
+			const editedTask = { ...todo, title: todoTitle.trim() };
 			try {
 				setIsFetching(true);
-				await editTodo(todo);
+				await editTodo(editedTask);
+				onUpdateTodos();
+				setIsEditing(false);
 			} catch (error: unknown) {
 				if (error instanceof Error) {
 					onError(error.message);
 				}
 			} finally {
-				setIsEditing(false);
-				setTodoTitle(todo.title);
-				onUpdateTodos();
+				setTodoTitle(editedTask.title);
 				setIsFetching(false);
 			}
 		} else {
