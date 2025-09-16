@@ -5,12 +5,12 @@
 }
 
 .button {
-	color: var(--primary-gray);
+	color: var(--secondary-color);
 	font-size: 25px;
 	font-weight: bold;
 }
 
 .active {
-	border-bottom: 4px solid var(--main-blue);
-	color: var(--main-blue);
+	border-bottom: 4px solid var(--primary-color);
+	color: var(--primary-color);
 }

@@ -1,0 +1,27 @@
+.form {
+	display: flex;
+	margin: 20px 0 20px 20px;
+	gap: 30px;
+}
+
+.input {
+	border-bottom: 1px solid var(--secondary-color);
+	font-size: 1.3em;
+}
+
+.button {
+	font-size: 1.3em;
+	color: white;
+	background-color: var(--primary-color);
+	padding: 15px;
+	border-radius: 15px;
+}
+
+.warning {
+	color: rgb(233, 98, 98);
+	padding: 0px;
+}
+
+.isNotValidParagraph {
+	margin-left: 20px;
+}

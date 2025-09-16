@@ -1,0 +1,97 @@
+.listItem,
+.todo,
+.buttonsContainer {
+	display: flex;
+	align-items: center;
+	gap: 20px;
+}
+
+.listItem {
+	max-width: 500px;
+	width: 100%;
+	margin: 0 0 10px 20px;
+	justify-content: space-between;
+	background-color: white;
+	min-height: 60px;
+	padding: 20px;
+	box-sizing: content-box;
+}
+
+.todo {
+	width: 60%;
+}
+
+.title {
+	max-width: 100%;
+	word-wrap: break-word;
+	overflow-wrap: break-word;
+	white-space: normal;
+	font-size: 1.3em;
+	font-weight: semi-bold;
+}
+
+.buttonsContainer {
+	flex-direction: row-reverse;
+}
+
+.button {
+	padding: 10px;
+	border-radius: 8px;
+}
+
+.delete {
+	background-color: var(--danger-color);
+}
+
+.cancel {
+	background-color: var(--bg-color);
+}
+
+.edit,
+.save {
+	background-color: var(--primary-color);
+}
+
+.input {
+	border-bottom: 1px solid var(--secondary-color);
+	font-size: 1.3em;
+}
+
+.isDone {
+	color: var(--secondary-color);
+	text-decoration: line-through;
+}
+
+.checkbox {
+	border-radius: 10px;
+}
+
+.form {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 20px;
+	max-width: 500px;
+	width: 100%;
+	justify-content: space-between;
+	background-color: white;
+	min-height: 60px;
+}
+
+.warning {
+	color: rgb(233, 98, 98);
+}
+
+.container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	max-width: 500px;
+	width: 100%;
+	margin: 0 0 10px 20px;
+	justify-content: space-between;
+	background-color: white;
+	min-height: 60px;
+	padding: 20px;
+	box-sizing: content-box;
+}
