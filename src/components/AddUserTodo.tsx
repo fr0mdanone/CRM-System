@@ -2,7 +2,7 @@ import styles from "./AddUserTodo.module.scss";
 
 import { FormEvent } from "react";
 import { validateTodoTitle } from "../utils/validators/todos";
-import { AddTodoData } from "../api/todos.types";
+import { AddTodoData } from "../types/todos";
 import { addTodo } from "../api/todos";
 import { useState, ChangeEvent } from "react";
 

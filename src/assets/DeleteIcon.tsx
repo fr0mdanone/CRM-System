@@ -1,4 +1,4 @@
-import { SVGProps } from "../utils/types/ui";
+import { SVGProps } from "../types/ui";
 
 const DeleteIcon: React.FC<SVGProps> = (props) => (
 	<svg

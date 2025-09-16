@@ -1,6 +1,6 @@
 import TodoItem from "./TodoItem";
 
-import { Todo } from "../api/todos.types";
+import { Todo } from "../types/todos";
 
 interface TodosProps {
 	onError: (errorMessage: string) => void;

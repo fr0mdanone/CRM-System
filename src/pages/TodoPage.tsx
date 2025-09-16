@@ -6,7 +6,7 @@ import ErrorModal from "../components/ErrorModal";
 import styles from "./TodoPage.module.scss";
 import { useState, useEffect } from "react";
 import { getTodos } from "../api/todos";
-import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../api/todos.types";
+import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
 
 const TodoPage: React.FC = () => {
 	const [isFetching, setIsFetching] = useState<boolean>(false);

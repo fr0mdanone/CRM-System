@@ -6,7 +6,7 @@ import DeleteIcon from "../assets/DeleteIcon";
 import EditIcon from "../assets/EditIcon";
 import SaveIcon from "../assets/SaveIcon";
 import { editTodo, deleteTodo } from "../api/todos";
-import { Todo } from "../api/todos.types";
+import { Todo } from "../types/todos";
 import CancelIcon from "../assets/CancelIcon";
 
 interface TodoItemProps {

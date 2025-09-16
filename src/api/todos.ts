@@ -4,7 +4,7 @@ import {
 	Todo,
 	MetaResponse,
 	TodoInfo,
-} from "./todos.types";
+} from "../types/todos";
 
 import { BASE_URL } from "../constants/todos.constants";
 

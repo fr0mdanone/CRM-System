@@ -1,4 +1,4 @@
-import { SVGProps } from "../utils/types/ui";
+import { SVGProps } from "../types/ui";
 
 const SaveIcon: React.FC<SVGProps> = (props) => (
 	<svg

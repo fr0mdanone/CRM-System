@@ -1,6 +1,6 @@
 import styles from "./FilterButtons.module.scss";
 
-import { TodoFilter, TodoInfo } from "../api/todos.types";
+import { TodoFilter, TodoInfo } from "../types/todos";
 
 interface FilterButtonsProps {
 	onSetFilter: (filter: TodoFilter) => void;
