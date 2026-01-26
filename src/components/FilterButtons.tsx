@@ -1,6 +1,5 @@
-import styles from "./FilterButtons.module.scss";
-
 import { TodoFilter, TodoInfo } from "../types/todos";
+import { Segmented } from "antd";
 
 interface FilterButtonsProps {
 	onSetFilter: (filter: TodoFilter) => void;
@@ -21,40 +20,28 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 		if (!isFilter(filter)) return;
 		onSetFilter(filter);
 	}
+
+	const filterOptions = [
+		{
+			label: `Все (${todoInfo.all})`,
+			value: "all",
+		},
+		{
+			label: `В работе (${todoInfo.inWork})`,
+			value: "inWork",
+		},
+		{
+			label: `Завершено (${todoInfo.completed})`,
+			value: "completed",
+		},
+	];
+
 	return (
-		<ul className={styles.flexContainer}>
-			<li>
-				<button
-					id="all"
-					onClick={() => onUpdatingFilter("all")}
-					className={`${styles.button} ${
-						filter === "all" ? styles.active : ""
-					}`}
-				>
-					{`Все (${todoInfo.all})`}
-				</button>
-			</li>
-			<li>
-				<button
-					onClick={() => onUpdatingFilter("inWork")}
-					className={`${styles.button} ${
-						filter === "inWork" ? styles.active : ""
-					}`}
-				>
-					{`В работе (${todoInfo.inWork})`}
-				</button>
-			</li>
-			<li>
-				<button
-					onClick={() => onUpdatingFilter("completed")}
-					className={`${styles.button} ${
-						filter === "completed" ? styles.active : ""
-					}`}
-				>
-					{`Завершено (${todoInfo.completed})`}
-				</button>
-			</li>
-		</ul>
+		<Segmented<string>
+			options={filterOptions}
+			value={filter}
+			onChange={onUpdatingFilter}
+		/>
 	);
 };
 

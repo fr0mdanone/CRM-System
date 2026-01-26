@@ -1,13 +1,15 @@
-import styles from "./TodoItem.module.scss";
-
-import { validateTodoTitle } from "../utils/validators/todos";
 import { ChangeEvent, FormEvent, useState } from "react";
-import DeleteIcon from "../assets/DeleteIcon";
-import EditIcon from "../assets/EditIcon";
-import SaveIcon from "../assets/SaveIcon";
 import { editTodo, deleteTodo } from "../api/todos";
 import { Todo } from "../types/todos";
-import CancelIcon from "../assets/CancelIcon";
+import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
+import type { CheckboxChangeEvent } from "antd";
+import {
+	CloseOutlined,
+	DeleteOutlined,
+	EditOutlined,
+	SaveOutlined,
+} from "@ant-design/icons";
+import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
 interface TodoItemProps {
 	todo: Todo;
@@ -22,17 +24,15 @@ const TodoItem: React.FC<TodoItemProps> = ({
 }) => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [todoTitle, setTodoTitle] = useState<string>(todo.title);
-	const [isValid, setIsValid] = useState<boolean>(true);
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
 	function handleTodoTitleChange(event: ChangeEvent<HTMLInputElement>) {
 		const changedTitle = event.currentTarget.value;
 		setTodoTitle(changedTitle);
-		setIsValid(validateTodoTitle(changedTitle));
 	}
 
-	async function handleToggle(todo: Todo) {
-		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
+	const handleToggle = async (todo: Todo, e: CheckboxChangeEvent) => {
+		const updatedTodo: Todo = { ...todo, isDone: e.target.checked };
 		try {
 			setIsFetching(true);
 			await editTodo(updatedTodo);
@@ -44,7 +44,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		} finally {
 			setIsFetching(false);
 		}
-	}
+	};
 
 	async function handleDeleteTodo(id: number) {
 		try {
@@ -60,25 +60,20 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		}
 	}
 
-	async function handleEditTodo(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-		if (validateTodoTitle(todoTitle)) {
-			const editedTask = { ...todo, title: todoTitle.trim() };
-			try {
-				setIsFetching(true);
-				await editTodo(editedTask);
-				onUpdateTodos();
-				setIsEditing(false);
-			} catch (error: unknown) {
-				if (error instanceof Error) {
-					onError(error.message);
-				}
-			} finally {
-				setTodoTitle(editedTask.title);
-				setIsFetching(false);
+	async function handleEditTodo() {
+		const editedTask = { ...todo, title: todoTitle.trim() };
+		try {
+			setIsFetching(true);
+			await editTodo(editedTask);
+			onUpdateTodos();
+			setIsEditing(false);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				onError(error.message);
 			}
-		} else {
-			setIsValid(false);
+		} finally {
+			setTodoTitle(editedTask.title);
+			setIsFetching(false);
 		}
 	}
 
@@ -87,80 +82,90 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		setTodoTitle(todo.title);
 	}
 
+	const onEditClick = (todo: Todo) => {
+		setIsEditing(true);
+		form.setFieldsValue({ "todo-title": todo.title });
+	};
+
+	const [form] = Form.useForm();
+
 	return (
 		<>
 			{!isEditing && (
-				<li className={styles.listItem}>
-					<div className={styles.todo}>
-						<input
+				<Flex
+					justify="space-between"
+					style={{
+						backgroundColor: "#fff",
+						padding: "10px",
+						maxWidth: "500px",
+					}}
+				>
+					<Flex gap="small" align="center">
+						<Checkbox
 							type="checkbox"
-							checked={todo.isDone}
-							onChange={() => handleToggle(todo)}
-							className={styles.checkbox}
+							defaultChecked={todo.isDone}
+							onChange={(e) => handleToggle(todo, e)}
 							disabled={isFetching}
 						/>
-						<p
-							className={`${styles.title} ${
-								todo.isDone === true ? styles.isDone : ""
-							}`}
+						<Typography.Text
+							delete={todo.isDone}
+							type={todo.isDone ? "secondary" : undefined}
 						>
 							{todo.title}
-						</p>
-					</div>
-					<div className={styles.buttonsContainer}>
-						<button
-							className={`${styles.delete} ${styles.button}`}
+						</Typography.Text>
+					</Flex>
+					<Flex justify="space-around" gap="small" style={{ minWidth: "25%" }}>
+						<Button
+							type="primary"
+							onClick={() => onEditClick(todo)}
+							disabled={isFetching}
+						>
+							<EditOutlined />
+						</Button>
+						<Button
+							type="primary"
+							danger
 							onClick={() => handleDeleteTodo(todo.id)}
 							disabled={isFetching}
 						>
-							<DeleteIcon />
-						</button>
-						<button
-							className={`${styles.edit} ${styles.button}`}
-							onClick={() => setIsEditing(true)}
-							disabled={isFetching}
-						>
-							<EditIcon />
-						</button>
-					</div>
-				</li>
+							<DeleteOutlined />
+						</Button>
+					</Flex>
+				</Flex>
 			)}
 			{isEditing && (
-				<div className={styles.container}>
-					<form onSubmit={handleEditTodo} className={styles.form}>
-						<input
-							type="text"
-							required
-							// defaultValue={todo.title}
-							value={todoTitle}
-							onChange={handleTodoTitleChange}
-							className={`${styles.input} ${!isValid ? styles.warning : ""}`}
-							disabled={isFetching}
-						/>
-						<div className={styles.buttonsContainer}>
-							<button
-								type="button"
-								onClick={handleCancel}
-								className={`${styles.button} ${styles.cancel}`}
-								disabled={isFetching}
-							>
-								<CancelIcon />
-							</button>
-							<button
-								type="submit"
-								className={`${styles.button} ${styles.save}`}
-								disabled={isFetching}
-							>
-								<SaveIcon />
-							</button>
-						</div>
-					</form>
-					{!isValid && (
-						<p className={styles.warning}>
-							Текст задачи должен быть от 2 до 64 символов
-						</p>
-					)}
-				</div>
+				<Form onFinish={handleEditTodo} disabled={isFetching} form={form}>
+					<Flex justify="space-between">
+						<Form.Item
+							name="todo-title"
+							rules={[
+								{ required: true, message: "Введите текст задачи" },
+								{
+									min: TODO_TITLE_MIN,
+									message: "Текст задачи должен состоять минимум из 2 символов",
+								},
+								{
+									max: TODO_TITLE_MAX,
+									message: "Текст задачи не должен превышать 64 символа",
+								},
+							]}
+						>
+							<Input value={todoTitle} onChange={handleTodoTitleChange} />
+						</Form.Item>
+						<Flex gap="small">
+							<Form.Item>
+								<Button type="primary" disabled={isFetching} htmlType="submit">
+									<SaveOutlined />
+								</Button>
+							</Form.Item>
+							<Form.Item>
+								<Button type="default" onClick={handleCancel} htmlType="reset">
+									<CloseOutlined />
+								</Button>
+							</Form.Item>
+						</Flex>
+					</Flex>
+				</Form>
 			)}
 		</>
 	);

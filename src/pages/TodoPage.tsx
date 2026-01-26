@@ -1,7 +1,7 @@
 import AddUserTodo from "../components/AddUserTodo";
 import Todos from "../components/Todos";
 import FilterButtons from "../components/FilterButtons";
-import ErrorModal from "../components/ErrorModal";
+import { Modal, Flex, Typography } from "antd";
 
 import styles from "./TodoPage.module.scss";
 import { useState, useEffect } from "react";
@@ -35,6 +35,10 @@ const TodoPage: React.FC = () => {
 		}
 	}
 
+	function onOk() {
+		setError("");
+	}
+
 	useEffect(() => {
 		fetchingTodos();
 	}, [filter]);
@@ -42,13 +46,21 @@ const TodoPage: React.FC = () => {
 	return (
 		<>
 			{error && (
-				<ErrorModal errorMessage={error} onErrorConfirm={() => setError("")} />
+				<Modal
+					closable={{ "aria-label": "Custom Close Button" }}
+					title="An error occured!"
+					open={Boolean(error)}
+					onOk={onOk}
+					onCancel={onOk}
+				>
+					<Typography.Paragraph>{error}</Typography.Paragraph>
+				</Modal>
 			)}
-			<div className={styles.container}>
+			<Flex vertical align="center">
 				{!isFetching && (
-					<main>
+					<Flex vertical>
 						<AddUserTodo onError={setError} onAddTodo={fetchingTodos} />
-						<section>
+						<Flex vertical gap="small">
 							<FilterButtons
 								todoInfo={todoInfo}
 								filter={filter}
@@ -59,15 +71,15 @@ const TodoPage: React.FC = () => {
 								onUpdateTodos={fetchingTodos}
 								onError={setError}
 							/>
-						</section>
-					</main>
+						</Flex>
+					</Flex>
 				)}
 				{isFetching && (
-					<p className={styles.isFetchingParagraph}>
+					<Typography.Paragraph>
 						Подождите, информация загружается
-					</p>
+					</Typography.Paragraph>
 				)}
-			</div>
+			</Flex>
 		</>
 	);
 };

@@ -1,6 +1,7 @@
 import TodoItem from "./TodoItem";
 
 import { Todo } from "../types/todos";
+import { Divider, Flex } from "antd";
 
 interface TodosProps {
 	onError: (errorMessage: string) => void;
@@ -14,16 +15,18 @@ const Todos: React.FC<TodosProps> = ({
 	onUpdateTodos,
 }: TodosProps) => {
 	return (
-		<ul>
+		<Flex vertical gap="small">
 			{todos.map((todo) => (
-				<TodoItem
-					key={todo.id}
-					todo={todo}
-					onError={onError}
-					onUpdateTodos={onUpdateTodos}
-				/>
+				<>
+					<TodoItem
+						key={todo.id}
+						todo={todo}
+						onError={onError}
+						onUpdateTodos={onUpdateTodos}
+					/>
+				</>
 			))}
-		</ul>
+		</Flex>
 	);
 };
 
