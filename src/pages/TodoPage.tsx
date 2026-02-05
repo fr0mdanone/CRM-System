@@ -3,13 +3,14 @@ import Todos from "../components/Todos";
 import FilterButtons from "../components/FilterButtons";
 import { Modal, Flex, Typography } from "antd";
 
-import styles from "./TodoPage.module.scss";
 import { useState, useEffect } from "react";
 import { getTodos } from "../api/todos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
 
 const TodoPage: React.FC = () => {
 	const [isFetching, setIsFetching] = useState<boolean>(false);
+	const [isTyping, setIsTyping] = useState<boolean>(false);
+	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [filter, setFilter] = useState<TodoFilter>("all");
@@ -43,6 +44,15 @@ const TodoPage: React.FC = () => {
 		fetchingTodos();
 	}, [filter]);
 
+	useEffect(() => {
+		if (isTyping || isEditing) return;
+		const interval = setInterval(() => {
+			fetchingTodos();
+		}, 5000);
+
+		return () => clearInterval(interval);
+	}, [filter, isTyping, isEditing]);
+
 	return (
 		<>
 			{error && (
@@ -59,7 +69,11 @@ const TodoPage: React.FC = () => {
 			<Flex vertical align="center">
 				{!isFetching && (
 					<Flex vertical>
-						<AddUserTodo onError={setError} onAddTodo={fetchingTodos} />
+						<AddUserTodo
+							onError={setError}
+							onAddTodo={fetchingTodos}
+							setIsTyping={setIsTyping}
+						/>
 						<Flex vertical gap="small">
 							<FilterButtons
 								todoInfo={todoInfo}
@@ -70,14 +84,10 @@ const TodoPage: React.FC = () => {
 								todos={todos}
 								onUpdateTodos={fetchingTodos}
 								onError={setError}
+								setIsTyping={setIsTyping}
 							/>
 						</Flex>
 					</Flex>
-				)}
-				{isFetching && (
-					<Typography.Paragraph>
-						Подождите, информация загружается
-					</Typography.Paragraph>
 				)}
 			</Flex>
 		</>

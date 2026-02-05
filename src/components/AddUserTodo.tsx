@@ -8,16 +8,19 @@ import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 interface AddUserTodoProps {
 	onError: (errorMessage: string) => void;
 	onAddTodo: () => void;
+	setIsTyping: (value: boolean) => void;
 }
 
 const AddUserTodo: React.FC<AddUserTodoProps> = ({
 	onError,
 	onAddTodo,
+	setIsTyping,
 }: AddUserTodoProps) => {
 	const [todoTitle, setTodoTitle] = useState<string>("");
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
 	function handleNewTodoTitle(event: ChangeEvent<HTMLInputElement>): void {
+		setIsTyping(true);
 		const newTodoTitle = event.currentTarget.value;
 		setTodoTitle(newTodoTitle);
 	}
@@ -66,6 +69,7 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 						style={{ width: "70%" }}
 					>
 						<Input
+							onBlur={() => setIsTyping(false)}
 							placeholder="Task to be done..."
 							onChange={handleNewTodoTitle}
 							value={todoTitle}

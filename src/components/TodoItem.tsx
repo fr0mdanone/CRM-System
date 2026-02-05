@@ -15,18 +15,21 @@ interface TodoItemProps {
 	todo: Todo;
 	onUpdateTodos: () => void;
 	onError: (errorMessage: string) => void;
+	setIsTyping: (value: boolean) => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
 	todo,
 	onUpdateTodos,
 	onError,
+	setIsTyping,
 }) => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [todoTitle, setTodoTitle] = useState<string>(todo.title);
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
 	function handleTodoTitleChange(event: ChangeEvent<HTMLInputElement>) {
+		setIsTyping(true);
 		const changedTitle = event.currentTarget.value;
 		setTodoTitle(changedTitle);
 	}
@@ -61,6 +64,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	}
 
 	async function handleEditTodo() {
+		setIsTyping(false);
 		const editedTask = { ...todo, title: todoTitle.trim() };
 		try {
 			setIsFetching(true);
@@ -78,11 +82,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	}
 
 	function handleCancel() {
+		setIsTyping(false);
 		setIsEditing(false);
 		setTodoTitle(todo.title);
 	}
 
 	const onEditClick = (todo: Todo) => {
+		setIsTyping(true);
 		setIsEditing(true);
 		form.setFieldsValue({ "todo-title": todo.title });
 	};
@@ -150,7 +156,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
 								},
 							]}
 						>
-							<Input value={todoTitle} onChange={handleTodoTitleChange} />
+							<Input
+								value={todoTitle}
+								onChange={handleTodoTitleChange}
+								onBlur={() => setIsTyping(false)}
+							/>
 						</Form.Item>
 						<Flex gap="small">
 							<Form.Item>

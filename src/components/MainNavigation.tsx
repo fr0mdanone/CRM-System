@@ -1,0 +1,33 @@
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import type { MenuProps } from "antd";
+import { Menu } from "antd";
+
+const MainNavigation: React.FC = () => {
+	const location = useLocation();
+	const navigate = useNavigate();
+	type MenuItem = Required<MenuProps>["items"][number];
+
+	const items: MenuItem[] = [
+		{
+			key: "/",
+			label: "Todo",
+		},
+		{
+			key: "/profile",
+			label: "Profile",
+		},
+	];
+	const onClick: MenuProps["onClick"] = (e) => {
+		console.log("click ", e);
+	};
+	return (
+		<Menu
+			mode="inline"
+			selectedKeys={[location.pathname]}
+			onClick={({ key }) => navigate(key)}
+			items={items}
+		/>
+	);
+};
+
+export default MainNavigation;
