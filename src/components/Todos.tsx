@@ -1,7 +1,7 @@
 import TodoItem from "./TodoItem";
 
 import { Todo } from "../types/todos";
-import { Divider, Flex } from "antd";
+import { Flex } from "antd";
 
 interface TodosProps {
 	onError: (errorMessage: string) => void;

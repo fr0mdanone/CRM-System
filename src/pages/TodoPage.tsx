@@ -4,13 +4,12 @@ import FilterButtons from "../components/FilterButtons";
 import { Modal, Flex, Typography } from "antd";
 
 import { useState, useEffect } from "react";
-import { getTodos } from "../api/todos";
+import { getTodos } from "../api/axiostodos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
 
 const TodoPage: React.FC = () => {
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const [isTyping, setIsTyping] = useState<boolean>(false);
-	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
 	const [filter, setFilter] = useState<TodoFilter>("all");
@@ -45,13 +44,13 @@ const TodoPage: React.FC = () => {
 	}, [filter]);
 
 	useEffect(() => {
-		if (isTyping || isEditing) return;
+		if (isTyping) return;
 		const interval = setInterval(() => {
 			fetchingTodos();
 		}, 5000);
 
 		return () => clearInterval(interval);
-	}, [filter, isTyping, isEditing]);
+	}, [filter, isTyping]);
 
 	return (
 		<>

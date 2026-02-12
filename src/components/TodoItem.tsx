@@ -1,5 +1,5 @@
 import { ChangeEvent, FormEvent, useState } from "react";
-import { editTodo, deleteTodo } from "../api/todos";
+import { editTodo, deleteTodo } from "../api/axiostodos";
 import { Todo } from "../types/todos";
 import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
 import type { CheckboxChangeEvent } from "antd";

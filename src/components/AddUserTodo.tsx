@@ -1,8 +1,8 @@
 import { Button, Flex, Form, Input } from "antd";
 
 import { AddTodoData } from "../types/todos";
-import { addTodo } from "../api/todos";
-import { useState, ChangeEvent } from "react";
+import { addTodo } from "../api/axiostodos";
+import { useState } from "react";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
 interface AddUserTodoProps {
@@ -11,29 +11,30 @@ interface AddUserTodoProps {
 	setIsTyping: (value: boolean) => void;
 }
 
+type AddTodoFormValues = {
+	todoTitle: string;
+};
+
 const AddUserTodo: React.FC<AddUserTodoProps> = ({
 	onError,
 	onAddTodo,
 	setIsTyping,
 }: AddUserTodoProps) => {
-	const [todoTitle, setTodoTitle] = useState<string>("");
+	const [form] = Form.useForm<AddTodoFormValues>();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	function handleNewTodoTitle(event: ChangeEvent<HTMLInputElement>): void {
-		setIsTyping(true);
-		const newTodoTitle = event.currentTarget.value;
-		setTodoTitle(newTodoTitle);
-	}
-
-	async function handleAddTodo(): Promise<void> {
+	async function handleAddTodo(values: AddTodoFormValues): Promise<void> {
 		try {
 			setIsFetching(true);
+			onError("");
+
+			const title = values.todoTitle.trim();
 			const userData: AddTodoData = {
-				title: todoTitle.trim(),
+				title,
 				isDone: false,
 			};
+
 			await addTodo(userData);
-			setTodoTitle("");
 			onAddTodo();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
@@ -46,7 +47,7 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 
 	return (
 		<>
-			<Form onFinish={handleAddTodo} disabled={isFetching}>
+			<Form form={form} onFinish={handleAddTodo} disabled={isFetching}>
 				<Flex
 					align="center"
 					justify="space-between"
@@ -54,7 +55,7 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 					style={{ width: "500px" }}
 				>
 					<Form.Item
-						name="todo-title"
+						name="todoTitle"
 						rules={[
 							{ required: true, message: "Введите текст задачи" },
 							{
@@ -69,10 +70,9 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 						style={{ width: "70%" }}
 					>
 						<Input
+							onFocus={() => setIsTyping(true)}
 							onBlur={() => setIsTyping(false)}
 							placeholder="Task to be done..."
-							onChange={handleNewTodoTitle}
-							value={todoTitle}
 							variant="underlined"
 						/>
 					</Form.Item>
