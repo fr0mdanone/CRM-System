@@ -1,7 +1,7 @@
 import { Button, Flex, Form, Input } from "antd";
 
 import { AddTodoData } from "../types/todos";
-import { addTodo } from "../api/axiostodos";
+import { addTodo } from "../api/todos";
 import { useState } from "react";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 

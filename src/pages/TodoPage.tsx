@@ -4,7 +4,7 @@ import FilterButtons from "../components/FilterButtons";
 import { Modal, Flex, Typography } from "antd";
 
 import { useState, useEffect } from "react";
-import { getTodos } from "../api/axiostodos";
+import { getTodos } from "../api/todos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
 
 const TodoPage: React.FC = () => {
