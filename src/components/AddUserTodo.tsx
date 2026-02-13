@@ -57,12 +57,20 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 					<Form.Item
 						name="todoTitle"
 						rules={[
-							{ required: true, message: "Введите текст задачи" },
 							{
+								required: true,
+								whitespace: true,
+								message: "Введите текст задачи",
+							},
+							{
+								transform: (value) =>
+									typeof value === "string" ? value.trim() : value,
 								min: TODO_TITLE_MIN,
 								message: "Текст задачи должен состоять минимум из 2 символов",
 							},
 							{
+								transform: (value) =>
+									typeof value === "string" ? value.trim() : value,
 								max: TODO_TITLE_MAX,
 								message: "Текст задачи не должен превышать 64 символа",
 							},

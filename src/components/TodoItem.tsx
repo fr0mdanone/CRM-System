@@ -18,6 +18,10 @@ interface TodoItemProps {
 	setIsTyping: (value: boolean) => void;
 }
 
+type EditTodoFormValues = {
+	todoTitle: string;
+};
+
 const TodoItem: React.FC<TodoItemProps> = ({
 	todo,
 	onUpdateTodos,
@@ -25,17 +29,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	setIsTyping,
 }) => {
 	const [isEditing, setIsEditing] = useState<boolean>(false);
-	const [todoTitle, setTodoTitle] = useState<string>(todo.title);
+	const [form] = Form.useForm();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	function handleTodoTitleChange(event: ChangeEvent<HTMLInputElement>) {
-		setIsTyping(true);
-		const changedTitle = event.currentTarget.value;
-		setTodoTitle(changedTitle);
-	}
-
-	const handleToggle = async (todo: Todo, e: CheckboxChangeEvent) => {
-		const updatedTodo: Todo = { ...todo, isDone: e.target.checked };
+	const handleToggle = async (todo: Todo) => {
+		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
 		try {
 			setIsFetching(true);
 			await editTodo(updatedTodo);
@@ -63,9 +61,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		}
 	}
 
-	async function handleEditTodo() {
+	async function handleEditTodo(values: EditTodoFormValues) {
+		onError("");
 		setIsTyping(false);
-		const editedTask = { ...todo, title: todoTitle.trim() };
+		const editedTask = { ...todo, title: values.todoTitle.trim() };
 		try {
 			setIsFetching(true);
 			await editTodo(editedTask);
@@ -76,15 +75,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
 				onError(error.message);
 			}
 		} finally {
-			setTodoTitle(editedTask.title);
 			setIsFetching(false);
 		}
-	}
-
-	function handleCancel() {
-		setIsTyping(false);
-		setIsEditing(false);
-		setTodoTitle(todo.title);
 	}
 
 	const onEditClick = (todo: Todo) => {
@@ -92,8 +84,6 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		setIsEditing(true);
 		form.setFieldsValue({ "todo-title": todo.title });
 	};
-
-	const [form] = Form.useForm();
 
 	return (
 		<>
@@ -109,8 +99,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					<Flex gap="small" align="center">
 						<Checkbox
 							type="checkbox"
-							defaultChecked={todo.isDone}
-							onChange={(e) => handleToggle(todo, e)}
+							checked={todo.isDone}
+							onChange={() => handleToggle(todo)}
 							disabled={isFetching}
 						/>
 						<Typography.Text
@@ -143,22 +133,29 @@ const TodoItem: React.FC<TodoItemProps> = ({
 				<Form onFinish={handleEditTodo} disabled={isFetching} form={form}>
 					<Flex justify="space-between">
 						<Form.Item
-							name="todo-title"
+							name="todoTitle"
 							rules={[
-								{ required: true, message: "Введите текст задачи" },
 								{
+									required: true,
+									whitespace: true,
+									message: "Введите текст задачи",
+								},
+								{
+									transform: (value) =>
+										typeof value === "string" ? value.trim() : value,
 									min: TODO_TITLE_MIN,
 									message: "Текст задачи должен состоять минимум из 2 символов",
 								},
 								{
+									transform: (value) =>
+										typeof value === "string" ? value.trim() : value,
 									max: TODO_TITLE_MAX,
 									message: "Текст задачи не должен превышать 64 символа",
 								},
 							]}
 						>
 							<Input
-								value={todoTitle}
-								onChange={handleTodoTitleChange}
+								onFocus={() => setIsTyping(true)}
 								onBlur={() => setIsTyping(false)}
 							/>
 						</Form.Item>
@@ -169,7 +166,11 @@ const TodoItem: React.FC<TodoItemProps> = ({
 								</Button>
 							</Form.Item>
 							<Form.Item>
-								<Button type="default" onClick={handleCancel} htmlType="reset">
+								<Button
+									type="default"
+									onClick={() => setIsEditing(false)}
+									htmlType="reset"
+								>
 									<CloseOutlined />
 								</Button>
 							</Form.Item>
