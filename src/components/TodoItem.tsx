@@ -79,10 +79,15 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		}
 	}
 
-	const onEditClick = (todo: Todo) => {
+	const onEditClick = (todo: Todo): void => {
 		setIsTyping(true);
 		setIsEditing(true);
 		form.setFieldsValue({ "todo-title": todo.title });
+	};
+
+	const onCancelClick = () => {
+		setIsEditing(false);
+		form.resetFields();
 	};
 
 	return (
@@ -134,6 +139,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					<Flex justify="space-between">
 						<Form.Item
 							name="todoTitle"
+							initialValue={todo.title}
 							rules={[
 								{
 									required: true,
@@ -166,11 +172,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 								</Button>
 							</Form.Item>
 							<Form.Item>
-								<Button
-									type="default"
-									onClick={() => setIsEditing(false)}
-									htmlType="reset"
-								>
+								<Button type="default" onClick={onCancelClick} htmlType="reset">
 									<CloseOutlined />
 								</Button>
 							</Form.Item>

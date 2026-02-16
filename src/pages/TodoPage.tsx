@@ -8,7 +8,6 @@ import { getTodos } from "../api/todos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
 
 const TodoPage: React.FC = () => {
-	const [isFetching, setIsFetching] = useState<boolean>(false);
 	const [isTyping, setIsTyping] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
@@ -19,19 +18,21 @@ const TodoPage: React.FC = () => {
 		inWork: 0,
 	});
 
+	function isEqual(obj1: Todo[], obj2: Todo[]): boolean {
+		return JSON.stringify(obj1) === JSON.stringify(obj2);
+	}
+
 	async function fetchingTodos(): Promise<void> {
 		try {
-			setIsFetching(true);
 			const response: MetaResponse<Todo, TodoInfo> = await getTodos(filter);
-
-			setTodos(response.data);
-			setTodoInfo(response.info!);
+			if (!isEqual(todos, response.data)) {
+				setTodos(response.data);
+				setTodoInfo(response.info!);
+			} else return;
 		} catch (error) {
 			if (error instanceof Error) {
 				setError(error.message);
 			}
-		} finally {
-			setIsFetching(false);
 		}
 	}
 
@@ -41,7 +42,7 @@ const TodoPage: React.FC = () => {
 
 	useEffect(() => {
 		fetchingTodos();
-	}, [filter]);
+	}, [filter, todos]);
 
 	useEffect(() => {
 		if (isTyping) return;
@@ -50,7 +51,7 @@ const TodoPage: React.FC = () => {
 		}, 5000);
 
 		return () => clearInterval(interval);
-	}, [filter, isTyping]);
+	}, [filter, isTyping, todos]);
 
 	return (
 		<>
@@ -66,28 +67,26 @@ const TodoPage: React.FC = () => {
 				</Modal>
 			)}
 			<Flex vertical align="center">
-				{!isFetching && (
-					<Flex vertical>
-						<AddUserTodo
+				<Flex vertical>
+					<AddUserTodo
+						onError={setError}
+						onAddTodo={fetchingTodos}
+						setIsTyping={setIsTyping}
+					/>
+					<Flex vertical gap="small">
+						<FilterButtons
+							todoInfo={todoInfo}
+							filter={filter}
+							onSetFilter={setFilter}
+						/>
+						<Todos
+							todos={todos}
+							onUpdateTodos={fetchingTodos}
 							onError={setError}
-							onAddTodo={fetchingTodos}
 							setIsTyping={setIsTyping}
 						/>
-						<Flex vertical gap="small">
-							<FilterButtons
-								todoInfo={todoInfo}
-								filter={filter}
-								onSetFilter={setFilter}
-							/>
-							<Todos
-								todos={todos}
-								onUpdateTodos={fetchingTodos}
-								onError={setError}
-								setIsTyping={setIsTyping}
-							/>
-						</Flex>
 					</Flex>
-				)}
+				</Flex>
 			</Flex>
 		</>
 	);
