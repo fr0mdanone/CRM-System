@@ -42,6 +42,7 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 			}
 		} finally {
 			setIsFetching(false);
+			form.resetFields();
 		}
 	}
 
