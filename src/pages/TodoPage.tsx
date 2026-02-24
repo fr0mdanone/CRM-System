@@ -25,10 +25,13 @@ const TodoPage: React.FC = () => {
 	async function fetchingTodos(): Promise<void> {
 		try {
 			const response: MetaResponse<Todo, TodoInfo> = await getTodos(filter);
-			if (!isEqual(todos, response.data)) {
-				setTodos(response.data);
-				setTodoInfo(response.info!);
-			} else return;
+			if (response.info) {
+				if (isEqual(todos, response.data)) return;
+				else {
+					setTodos(response.data);
+					setTodoInfo(response.info);
+				}
+			}
 		} catch (error) {
 			if (error instanceof Error) {
 				setError(error.message);
