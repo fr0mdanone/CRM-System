@@ -27,10 +27,8 @@ const TodoPage: React.FC = () => {
 			const response: MetaResponse<Todo, TodoInfo> = await getTodos(filter);
 			if (response.info) {
 				if (isEqual(todos, response.data)) return;
-				else {
-					setTodos(response.data);
-					setTodoInfo(response.info);
-				}
+				setTodos(response.data);
+				setTodoInfo(response.info);
 			}
 		} catch (error) {
 			if (error instanceof Error) {
