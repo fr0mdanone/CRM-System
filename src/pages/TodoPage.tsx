@@ -1,5 +1,5 @@
-import AddUserTodo from "../components/AddUserTodo";
-import Todos from "../components/Todos";
+import AddTodo from "../components/AddTodo";
+import TodosList from "../components/TodosList";
 import FilterButtons from "../components/FilterButtons";
 import { Modal, Flex, Typography } from "antd";
 
@@ -37,7 +37,7 @@ const TodoPage: React.FC = () => {
 		}
 	}
 
-	function onOk() {
+	function onErrorReset() {
 		setError("");
 	}
 
@@ -61,15 +61,15 @@ const TodoPage: React.FC = () => {
 					closable={{ "aria-label": "Custom Close Button" }}
 					title="An error occured!"
 					open={Boolean(error)}
-					onOk={onOk}
-					onCancel={onOk}
+					onOk={onErrorReset}
+					onCancel={onErrorReset}
 				>
 					<Typography.Paragraph>{error}</Typography.Paragraph>
 				</Modal>
 			)}
 			<Flex vertical align="center">
 				<Flex vertical>
-					<AddUserTodo
+					<AddTodo
 						onError={setError}
 						onAddTodo={fetchingTodos}
 						setIsTyping={setIsTyping}
@@ -80,7 +80,7 @@ const TodoPage: React.FC = () => {
 							filter={filter}
 							onSetFilter={setFilter}
 						/>
-						<Todos
+						<TodosList
 							todos={todos}
 							onUpdateTodos={fetchingTodos}
 							onError={setError}

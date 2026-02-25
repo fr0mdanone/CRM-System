@@ -1,8 +1,7 @@
-import { ChangeEvent, FormEvent, useState } from "react";
-import { editTodo, deleteTodo } from "../api/todos";
+import { useState } from "react";
+import { updateTodo, deleteTodo } from "../api/todos";
 import { Todo } from "../types/todos";
 import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
-import type { CheckboxChangeEvent } from "antd";
 import {
 	CloseOutlined,
 	DeleteOutlined,
@@ -36,7 +35,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
 		try {
 			setIsFetching(true);
-			await editTodo(updatedTodo);
+			await updateTodo(updatedTodo);
 			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
@@ -64,10 +63,10 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	async function handleEditTodo(values: EditTodoFormValues) {
 		onError("");
 		setIsTyping(false);
-		const editedTask = { ...todo, title: values.todoTitle.trim() };
+		const updatedTask = { ...todo, title: values.todoTitle.trim() };
 		try {
 			setIsFetching(true);
-			await editTodo(editedTask);
+			await updateTodo(updatedTask);
 			onUpdateTodos();
 			setIsEditing(false);
 		} catch (error: unknown) {
@@ -82,7 +81,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	const onEditClick = (todo: Todo): void => {
 		setIsTyping(true);
 		setIsEditing(true);
-		form.setFieldsValue({ "todo-title": todo.title });
+		form.setFieldsValue({ todoTitle: todo.title });
 	};
 
 	const onCancelClick = () => {

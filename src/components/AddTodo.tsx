@@ -5,8 +5,8 @@ import { addTodo } from "../api/todos";
 import { useState } from "react";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
-interface AddUserTodoProps {
-	onError: (errorMessage: string) => void;
+interface AddTodoProps {
+	onError: (errorMessage: string) => unknown;
 	onAddTodo: () => void;
 	setIsTyping: (value: boolean) => void;
 }
@@ -15,11 +15,11 @@ type AddTodoFormValues = {
 	todoTitle: string;
 };
 
-const AddUserTodo: React.FC<AddUserTodoProps> = ({
+const AddTodo: React.FC<AddTodoProps> = ({
 	onError,
 	onAddTodo,
 	setIsTyping,
-}: AddUserTodoProps) => {
+}) => {
 	const [form] = Form.useForm<AddTodoFormValues>();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
@@ -29,12 +29,12 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 			onError("");
 
 			const title = values.todoTitle.trim();
-			const userData: AddTodoData = {
+			const newTodo: AddTodoData = {
 				title,
 				isDone: false,
 			};
 
-			await addTodo(userData);
+			await addTodo(newTodo);
 			onAddTodo();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
@@ -101,4 +101,4 @@ const AddUserTodo: React.FC<AddUserTodoProps> = ({
 	);
 };
 
-export default AddUserTodo;
+export default AddTodo;

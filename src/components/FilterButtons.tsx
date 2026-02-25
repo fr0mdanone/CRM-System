@@ -11,7 +11,7 @@ const FilterButtons: React.FC<FilterButtonsProps> = ({
 	onSetFilter,
 	todoInfo,
 	filter,
-}: FilterButtonsProps) => {
+}) => {
 	function isFilter(value: string): value is TodoFilter {
 		return value === "all" || value === "inWork" || value === "completed";
 	}

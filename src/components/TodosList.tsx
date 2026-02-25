@@ -10,12 +10,12 @@ interface TodosProps {
 	setIsTyping: (value: boolean) => void;
 }
 
-const Todos: React.FC<TodosProps> = ({
+const TodosList: React.FC<TodosProps> = ({
 	todos,
 	onError,
 	onUpdateTodos,
 	setIsTyping,
-}: TodosProps) => {
+}) => {
 	return (
 		<Flex vertical gap="small">
 			{todos.map((todo) => (
@@ -31,4 +31,4 @@ const Todos: React.FC<TodosProps> = ({
 	);
 };
 
-export default Todos;
+export default TodosList;
