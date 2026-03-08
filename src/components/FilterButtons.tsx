@@ -1,17 +1,13 @@
 import { TodoFilter, TodoInfo } from "../types/todos";
 import { Segmented } from "antd";
 
-interface FilterButtonsProps {
+interface Props {
 	onSetFilter: (filter: TodoFilter) => void;
 	todoInfo: TodoInfo;
 	filter: TodoFilter;
 }
 
-const FilterButtons: React.FC<FilterButtonsProps> = ({
-	onSetFilter,
-	todoInfo,
-	filter,
-}) => {
+const FilterButtons: React.FC<Props> = ({ onSetFilter, todoInfo, filter }) => {
 	function isFilter(value: string): value is TodoFilter {
 		return value === "all" || value === "inWork" || value === "completed";
 	}

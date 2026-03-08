@@ -3,11 +3,15 @@ import TodosList from "../components/TodosList";
 import FilterButtons from "../components/FilterButtons";
 import { Modal, Flex, Typography } from "antd";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { getTodos } from "../api/todos";
 import { Todo, TodoInfo, TodoFilter, MetaResponse } from "../types/todos";
+import NotficationContextProvider, {
+	TodoNotificationContext,
+} from "../store/todos/notification-context";
 
 const TodoPage: React.FC = () => {
+	const { openTodoNotification } = useContext(TodoNotificationContext);
 	const [isTyping, setIsTyping] = useState<boolean>(false);
 	const [error, setError] = useState<string>("");
 	const [todos, setTodos] = useState<Todo[]>([]);
@@ -32,13 +36,9 @@ const TodoPage: React.FC = () => {
 			}
 		} catch (error) {
 			if (error instanceof Error) {
-				setError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		}
-	}
-
-	function onErrorReset() {
-		setError("");
 	}
 
 	useEffect(() => {
@@ -55,25 +55,10 @@ const TodoPage: React.FC = () => {
 	}, [filter, isTyping, todos]);
 
 	return (
-		<>
-			{error && (
-				<Modal
-					closable={{ "aria-label": "Custom Close Button" }}
-					title="An error occured!"
-					open={Boolean(error)}
-					onOk={onErrorReset}
-					onCancel={onErrorReset}
-				>
-					<Typography.Paragraph>{error}</Typography.Paragraph>
-				</Modal>
-			)}
+		<NotficationContextProvider>
 			<Flex vertical align="center">
 				<Flex vertical>
-					<AddTodo
-						onError={setError}
-						onAddTodo={fetchingTodos}
-						setIsTyping={setIsTyping}
-					/>
+					<AddTodo onAddTodo={fetchingTodos} setIsTyping={setIsTyping} />
 					<Flex vertical gap="small">
 						<FilterButtons
 							todoInfo={todoInfo}
@@ -83,13 +68,12 @@ const TodoPage: React.FC = () => {
 						<TodosList
 							todos={todos}
 							onUpdateTodos={fetchingTodos}
-							onError={setError}
 							setIsTyping={setIsTyping}
 						/>
 					</Flex>
 				</Flex>
 			</Flex>
-		</>
+		</NotficationContextProvider>
 	);
 };
 

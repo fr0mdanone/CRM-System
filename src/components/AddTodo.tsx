@@ -1,12 +1,12 @@
 import { Button, Flex, Form, Input } from "antd";
 
+import { TodoNotificationContext } from "../store/todos/notification-context";
 import { AddTodoData } from "../types/todos";
 import { addTodo } from "../api/todos";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
-interface AddTodoProps {
-	onError: (errorMessage: string) => unknown;
+interface Props {
 	onAddTodo: () => void;
 	setIsTyping: (value: boolean) => void;
 }
@@ -15,18 +15,14 @@ type AddTodoFormValues = {
 	todoTitle: string;
 };
 
-const AddTodo: React.FC<AddTodoProps> = ({
-	onError,
-	onAddTodo,
-	setIsTyping,
-}) => {
+const AddTodo: React.FC<Props> = ({ onAddTodo, setIsTyping }) => {
+	const { openTodoNotification } = useContext(TodoNotificationContext);
 	const [form] = Form.useForm<AddTodoFormValues>();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
 	async function handleAddTodo(values: AddTodoFormValues): Promise<void> {
 		try {
 			setIsFetching(true);
-			onError("");
 
 			const title = values.todoTitle.trim();
 			const newTodo: AddTodoData = {
@@ -38,7 +34,7 @@ const AddTodo: React.FC<AddTodoProps> = ({
 			onAddTodo();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);

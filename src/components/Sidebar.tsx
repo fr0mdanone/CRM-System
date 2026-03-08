@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import type { MenuProps } from "antd";
 import { Menu } from "antd";
 
-const MainNavigation: React.FC = () => {
+const Sidebar: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	type MenuItem = Required<MenuProps>["items"][number];
@@ -30,4 +30,4 @@ const MainNavigation: React.FC = () => {
 	);
 };
 
-export default MainNavigation;
+export default Sidebar;

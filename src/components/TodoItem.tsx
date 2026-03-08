@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { updateTodo, deleteTodo } from "../api/todos";
 import { Todo } from "../types/todos";
+import { TodoNotificationContext } from "../store/todos/notification-context";
 import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
 import {
 	CloseOutlined,
@@ -10,23 +11,18 @@ import {
 } from "@ant-design/icons";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
-interface TodoItemProps {
+interface Props {
 	todo: Todo;
 	onUpdateTodos: () => void;
-	onError: (errorMessage: string) => void;
 	setIsTyping: (value: boolean) => void;
 }
 
 type EditTodoFormValues = {
-	todoTitle: string;
+	title: string;
 };
 
-const TodoItem: React.FC<TodoItemProps> = ({
-	todo,
-	onUpdateTodos,
-	onError,
-	setIsTyping,
-}) => {
+const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
+	const { openTodoNotification } = useContext(TodoNotificationContext);
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [form] = Form.useForm();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
@@ -39,7 +35,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);
@@ -53,7 +49,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);
@@ -61,9 +57,8 @@ const TodoItem: React.FC<TodoItemProps> = ({
 	}
 
 	async function handleEditTodo(values: EditTodoFormValues) {
-		onError("");
 		setIsTyping(false);
-		const updatedTask = { ...todo, title: values.todoTitle.trim() };
+		const updatedTask = { ...todo, ...values };
 		try {
 			setIsFetching(true);
 			await updateTodo(updatedTask);
@@ -71,20 +66,19 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			setIsEditing(false);
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);
 		}
 	}
 
-	const onEditClick = (todo: Todo): void => {
+	const onEdit = (todo: Todo): void => {
 		setIsTyping(true);
 		setIsEditing(true);
-		form.setFieldsValue({ todoTitle: todo.title });
 	};
 
-	const onCancelClick = () => {
+	const onCancel = () => {
 		setIsEditing(false);
 		form.resetFields();
 	};
@@ -117,7 +111,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 					<Flex justify="space-around" gap="small" style={{ minWidth: "25%" }}>
 						<Button
 							type="primary"
-							onClick={() => onEditClick(todo)}
+							onClick={() => onEdit(todo)}
 							disabled={isFetching}
 						>
 							<EditOutlined />
@@ -134,11 +128,15 @@ const TodoItem: React.FC<TodoItemProps> = ({
 				</Flex>
 			)}
 			{isEditing && (
-				<Form onFinish={handleEditTodo} disabled={isFetching} form={form}>
+				<Form
+					onFinish={handleEditTodo}
+					disabled={isFetching}
+					form={form}
+					initialValues={{ title: todo.title }}
+				>
 					<Flex justify="space-between">
 						<Form.Item
-							name="todoTitle"
-							initialValue={todo.title}
+							name="title"
 							rules={[
 								{
 									required: true,
@@ -171,7 +169,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 								</Button>
 							</Form.Item>
 							<Form.Item>
-								<Button type="default" onClick={onCancelClick} htmlType="reset">
+								<Button type="default" onClick={onCancel} htmlType="reset">
 									<CloseOutlined />
 								</Button>
 							</Form.Item>
