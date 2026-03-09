@@ -5,6 +5,7 @@ import { Menu } from "antd";
 const Sidebar: React.FC = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
+
 	type MenuItem = Required<MenuProps>["items"][number];
 
 	const items: MenuItem[] = [
@@ -17,14 +18,16 @@ const Sidebar: React.FC = () => {
 			label: "Profile",
 		},
 	];
-	const onClick: MenuProps["onClick"] = (e) => {
-		console.log("click ", e);
+
+	const navigateHandler = (key: string) => {
+		navigate(key);
 	};
+
 	return (
 		<Menu
 			mode="inline"
 			selectedKeys={[location.pathname]}
-			onClick={({ key }) => navigate(key)}
+			onClick={({ key }) => navigateHandler(key)}
 			items={items}
 		/>
 	);
