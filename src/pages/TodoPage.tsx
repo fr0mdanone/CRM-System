@@ -43,7 +43,11 @@ const TodoPage: React.FC = () => {
 
 	useEffect(() => {
 		fetchingTodos();
-	}, [filter, todos]);
+	}, [todos]);
+
+	useEffect(() => {
+		fetchingTodos();
+	}, [filter]);
 
 	useEffect(() => {
 		if (isTyping) return;
