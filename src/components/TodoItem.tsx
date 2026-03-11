@@ -1,50 +1,46 @@
-import styles from "./TodoItem.module.scss";
-
-import { validateTodoTitle } from "../utils/validators/todos";
-import { ChangeEvent, FormEvent, useState } from "react";
-import DeleteIcon from "../assets/DeleteIcon";
-import EditIcon from "../assets/EditIcon";
-import SaveIcon from "../assets/SaveIcon";
-import { editTodo, deleteTodo } from "../api/todos";
+import { useContext, useState } from "react";
+import { updateTodo, deleteTodo } from "../api/todos";
 import { Todo } from "../types/todos";
-import CancelIcon from "../assets/CancelIcon";
+import { TodoNotificationContext } from "../store/todos/notification-context";
+import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
+import {
+	CloseOutlined,
+	DeleteOutlined,
+	EditOutlined,
+	SaveOutlined,
+} from "@ant-design/icons";
+import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
 
-interface TodoItemProps {
+interface Props {
 	todo: Todo;
 	onUpdateTodos: () => void;
-	onError: (errorMessage: string) => void;
+	setIsTyping: (value: boolean) => void;
 }
 
-const TodoItem: React.FC<TodoItemProps> = ({
-	todo,
-	onUpdateTodos,
-	onError,
-}) => {
+type EditTodoFormValues = {
+	title: string;
+};
+
+const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
+	const { openTodoNotification } = useContext(TodoNotificationContext);
 	const [isEditing, setIsEditing] = useState<boolean>(false);
-	const [todoTitle, setTodoTitle] = useState<string>(todo.title);
-	const [isValid, setIsValid] = useState<boolean>(true);
+	const [form] = Form.useForm();
 	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	function handleTodoTitleChange(event: ChangeEvent<HTMLInputElement>) {
-		const changedTitle = event.currentTarget.value;
-		setTodoTitle(changedTitle);
-		setIsValid(validateTodoTitle(changedTitle));
-	}
-
-	async function handleToggle(todo: Todo) {
+	const handleToggle = async (todo: Todo) => {
 		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
 		try {
 			setIsFetching(true);
-			await editTodo(updatedTodo);
+			await updateTodo(updatedTodo);
 			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);
 		}
-	}
+	};
 
 	async function handleDeleteTodo(id: number) {
 		try {
@@ -53,114 +49,133 @@ const TodoItem: React.FC<TodoItemProps> = ({
 			onUpdateTodos();
 		} catch (error: unknown) {
 			if (error instanceof Error) {
-				onError(error.message);
+				openTodoNotification("error", error.message);
 			}
 		} finally {
 			setIsFetching(false);
 		}
 	}
 
-	async function handleEditTodo(event: FormEvent<HTMLFormElement>) {
-		event.preventDefault();
-		if (validateTodoTitle(todoTitle)) {
-			const editedTask = { ...todo, title: todoTitle.trim() };
-			try {
-				setIsFetching(true);
-				await editTodo(editedTask);
-				onUpdateTodos();
-				setIsEditing(false);
-			} catch (error: unknown) {
-				if (error instanceof Error) {
-					onError(error.message);
-				}
-			} finally {
-				setTodoTitle(editedTask.title);
-				setIsFetching(false);
+	async function handleEditTodo(values: EditTodoFormValues) {
+		setIsTyping(false);
+		const updatedTask = { ...todo, ...values };
+		try {
+			setIsFetching(true);
+			await updateTodo(updatedTask);
+			onUpdateTodos();
+			setIsEditing(false);
+		} catch (error: unknown) {
+			if (error instanceof Error) {
+				openTodoNotification("error", error.message);
 			}
-		} else {
-			setIsValid(false);
+		} finally {
+			setIsFetching(false);
 		}
 	}
 
-	function handleCancel() {
+	const onEdit = (todo: Todo): void => {
+		setIsTyping(true);
+		setIsEditing(true);
+	};
+
+	const onCancel = () => {
 		setIsEditing(false);
-		setTodoTitle(todo.title);
-	}
+		form.resetFields();
+	};
 
 	return (
 		<>
 			{!isEditing && (
-				<li className={styles.listItem}>
-					<div className={styles.todo}>
-						<input
+				<Flex
+					justify="space-between"
+					style={{
+						backgroundColor: "#fff",
+						padding: "10px",
+						maxWidth: "500px",
+					}}
+				>
+					<Flex gap="small" align="center">
+						<Checkbox
 							type="checkbox"
 							checked={todo.isDone}
 							onChange={() => handleToggle(todo)}
-							className={styles.checkbox}
 							disabled={isFetching}
 						/>
-						<p
-							className={`${styles.title} ${
-								todo.isDone === true ? styles.isDone : ""
-							}`}
+						<Typography.Text
+							delete={todo.isDone}
+							type={todo.isDone ? "secondary" : undefined}
 						>
 							{todo.title}
-						</p>
-					</div>
-					<div className={styles.buttonsContainer}>
-						<button
-							className={`${styles.delete} ${styles.button}`}
+						</Typography.Text>
+					</Flex>
+					<Flex justify="space-around" gap="small" style={{ minWidth: "25%" }}>
+						<Button
+							type="primary"
+							onClick={() => onEdit(todo)}
+							disabled={isFetching}
+						>
+							<EditOutlined />
+						</Button>
+						<Button
+							type="primary"
+							danger
 							onClick={() => handleDeleteTodo(todo.id)}
 							disabled={isFetching}
 						>
-							<DeleteIcon />
-						</button>
-						<button
-							className={`${styles.edit} ${styles.button}`}
-							onClick={() => setIsEditing(true)}
-							disabled={isFetching}
-						>
-							<EditIcon />
-						</button>
-					</div>
-				</li>
+							<DeleteOutlined />
+						</Button>
+					</Flex>
+				</Flex>
 			)}
 			{isEditing && (
-				<div className={styles.container}>
-					<form onSubmit={handleEditTodo} className={styles.form}>
-						<input
-							type="text"
-							required
-							// defaultValue={todo.title}
-							value={todoTitle}
-							onChange={handleTodoTitleChange}
-							className={`${styles.input} ${!isValid ? styles.warning : ""}`}
-							disabled={isFetching}
-						/>
-						<div className={styles.buttonsContainer}>
-							<button
-								type="button"
-								onClick={handleCancel}
-								className={`${styles.button} ${styles.cancel}`}
-								disabled={isFetching}
-							>
-								<CancelIcon />
-							</button>
-							<button
-								type="submit"
-								className={`${styles.button} ${styles.save}`}
-								disabled={isFetching}
-							>
-								<SaveIcon />
-							</button>
-						</div>
-					</form>
-					{!isValid && (
-						<p className={styles.warning}>
-							Текст задачи должен быть от 2 до 64 символов
-						</p>
-					)}
-				</div>
+				<Form
+					onFinish={handleEditTodo}
+					disabled={isFetching}
+					form={form}
+					initialValues={{ title: todo.title }}
+				>
+					<Flex justify="space-between">
+						<Form.Item
+							name="title"
+							rules={[
+								{
+									required: true,
+									whitespace: true,
+									message: "Введите текст задачи",
+								},
+								{
+									transform: (value) =>
+										typeof value === "string" ? value.trim() : value,
+									min: TODO_TITLE_MIN,
+									message: "Текст задачи должен состоять минимум из 2 символов",
+								},
+								{
+									transform: (value) =>
+										typeof value === "string" ? value.trim() : value,
+									max: TODO_TITLE_MAX,
+									message: "Текст задачи не должен превышать 64 символа",
+								},
+							]}
+						>
+							<Input
+								onFocus={() => setIsTyping(true)}
+								onBlur={() => setIsTyping(false)}
+							/>
+						</Form.Item>
+						<Flex gap="small">
+							<Form.Item>
+								<Button type="primary" disabled={isFetching} htmlType="submit">
+									<SaveOutlined />
+								</Button>
+							</Form.Item>
+							<Form.Item>
+								<Button type="default" onClick={onCancel} htmlType="reset">
+									<CloseOutlined />
+								</Button>
+							</Form.Item>
+						</Flex>
+					</Flex>
+				</Form>
 			)}
 		</>
 	);

@@ -1,30 +1,27 @@
 import TodoItem from "./TodoItem";
 
 import { Todo } from "../types/todos";
+import { Flex } from "antd";
 
-interface TodosProps {
-	onError: (errorMessage: string) => void;
+interface Props {
 	onUpdateTodos: () => void;
 	todos: Array<Todo>;
+	setIsTyping: (value: boolean) => void;
 }
 
-const Todos: React.FC<TodosProps> = ({
-	todos,
-	onError,
-	onUpdateTodos,
-}: TodosProps) => {
+const TodosList: React.FC<Props> = ({ todos, onUpdateTodos, setIsTyping }) => {
 	return (
-		<ul>
+		<Flex vertical gap="small">
 			{todos.map((todo) => (
 				<TodoItem
 					key={todo.id}
 					todo={todo}
-					onError={onError}
 					onUpdateTodos={onUpdateTodos}
+					setIsTyping={setIsTyping}
 				/>
 			))}
-		</ul>
+		</Flex>
 	);
 };
 
-export default Todos;
+export default TodosList;

@@ -1,3 +1,5 @@
+import { api } from "../axios/axios";
+
 import {
 	TodoFilter,
 	TodoRequest,
@@ -8,82 +10,48 @@ import {
 
 import { BASE_URL } from "../constants/todos.constants";
 
-export async function getTodos(
-	filter: TodoFilter
-): Promise<MetaResponse<Todo, TodoInfo>> {
-	const response = await fetch(`${BASE_URL}/todos?filter=${filter}`);
-
-	if (!response.ok) {
-		throw new Error(
-			"Не удалось получить список задач с сервера. Попробуйте позже."
-		);
+export const getTodos = async (
+	filter: TodoFilter,
+): Promise<MetaResponse<Todo, TodoInfo>> => {
+	try {
+		const response = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
+			params: { filter },
+		});
+		return response.data;
+	} catch (error) {
+		throw error;
 	}
-	const resData: MetaResponse<Todo, TodoInfo> = await response.json();
-	return resData;
-}
+};
 
-export async function addTodo(userData: TodoRequest): Promise<Todo> {
-	const response = await fetch(`${BASE_URL}/todos`, {
-		method: "POST",
-		body: JSON.stringify(userData),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		if (response.status >= 500) {
-			throw new Error("Добавить задачу не удалось. Попробуйте позже.");
-		} else if (response.status >= 400) {
-			throw new Error("Добавить задачу не удалось. Проверьте данные.");
-		}
+export const addTodo = async (newTodo: TodoRequest): Promise<Todo> => {
+	try {
+		const response = await api.post<Todo>("/todos", newTodo);
+		return response.data;
+	} catch (error) {
+		throw error;
 	}
-	const resData: Todo = await response.json();
-	return resData;
-}
+};
 
-export async function deleteTodo(id: number): Promise<void> {
-	const response = await fetch(`${BASE_URL}/todos/${id}`, {
-		method: "DELETE",
-	});
-
-	if (!response.ok) {
-		if (response.status === 404) {
-			throw new Error("Не удалось удалить задачу. Задача не найдена.");
-		} else if (response.status >= 400) {
-			throw new Error(
-				"Не удалось удалить задачу. Неверный или несуществующий ID задачи."
-			);
-		} else if (response.status >= 500) {
-			throw new Error("Не удалось удалить задачу. Попробуйте позже.");
-		}
+export const deleteTodo = async (id: number): Promise<void> => {
+	try {
+		await api.delete<string>(`/todos/${id}`);
+	} catch (error) {
+		throw error;
 	}
-	return;
-}
+};
 
-export async function editTodo(task: Todo): Promise<Todo> {
+export const updateTodo = async (todo: Todo): Promise<Todo> => {
 	const dataToSend = {
-		title: task.title,
-		isDone: task.isDone,
+		title: todo.title,
+		isDone: todo.isDone,
 	};
-	const response = await fetch(`${BASE_URL}/todos/${task.id}`, {
-		method: "PUT",
-		body: JSON.stringify(dataToSend),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	});
-
-	if (!response.ok) {
-		console.log(response.status);
-		if (response.status === 400) {
-			throw new Error("Не удалось изменить задачу. Проверьте данные.");
-		} else if (response.status === 404) {
-			throw new Error("Не удалось изменить задачу. Задача не найдена.");
-		} else if (response.status >= 500) {
-			throw new Error("Не удалось изменить задачу. Попробуйте позже.");
-		}
+	try {
+		const response = await api.put<Todo>(
+			`${BASE_URL}/todos/${todo.id}`,
+			dataToSend,
+		);
+		return response.data;
+	} catch (error) {
+		throw error;
 	}
-	const resData: Todo = await response.json();
-	return resData;
-}
+};
