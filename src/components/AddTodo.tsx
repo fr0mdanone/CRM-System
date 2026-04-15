@@ -1,50 +1,37 @@
 import { Button, Flex, Form, Input } from "antd";
 
-import { TodoNotificationContext } from "../store/todos/notification-context";
-import { AddTodoData } from "../types/todos";
-import { addTodo } from "../api/todos";
-import { useContext, useState } from "react";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
-
-interface Props {
-	onAddTodo: () => void;
-	setIsTyping: (value: boolean) => void;
-}
+import { useAppDispatch, useAppSelector } from "../store";
+import { addTodoThunk } from "../store/todos/todos-actions";
+import { setIsLocked } from "../store/ui/ui-slice";
 
 type AddTodoFormValues = {
-	todoTitle: string;
+	title: string;
 };
 
-const AddTodo: React.FC<Props> = ({ onAddTodo, setIsTyping }) => {
-	const { openTodoNotification } = useContext(TodoNotificationContext);
+const AddTodo: React.FC = () => {
+	const dispatch = useAppDispatch();
+	const isAdding = useAppSelector((state) => state.todos.isAdding);
+
 	const [form] = Form.useForm<AddTodoFormValues>();
-	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	async function handleAddTodo(values: AddTodoFormValues): Promise<void> {
-		try {
-			setIsFetching(true);
+	const focusHanlder = () => {
+		dispatch(setIsLocked(true));
+	};
 
-			const title = values.todoTitle.trim();
-			const newTodo: AddTodoData = {
-				title,
-				isDone: false,
-			};
+	const blurHandler = () => {
+		dispatch(setIsLocked(false));
+	};
 
-			await addTodo(newTodo);
-			onAddTodo();
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				openTodoNotification("error", error.message);
-			}
-		} finally {
-			setIsFetching(false);
-			form.resetFields();
-		}
-	}
+	const handleAddTodo = (values: AddTodoFormValues) => {
+		const title = values.title.trim();
+		dispatch(addTodoThunk(title));
+		form.resetFields();
+	};
 
 	return (
 		<>
-			<Form form={form} onFinish={handleAddTodo} disabled={isFetching}>
+			<Form form={form} onFinish={handleAddTodo} disabled={isAdding}>
 				<Flex
 					align="center"
 					justify="space-between"
@@ -52,7 +39,7 @@ const AddTodo: React.FC<Props> = ({ onAddTodo, setIsTyping }) => {
 					style={{ width: "500px" }}
 				>
 					<Form.Item
-						name="todoTitle"
+						name="title"
 						rules={[
 							{
 								required: true,
@@ -75,8 +62,8 @@ const AddTodo: React.FC<Props> = ({ onAddTodo, setIsTyping }) => {
 						style={{ width: "70%" }}
 					>
 						<Input
-							onFocus={() => setIsTyping(true)}
-							onBlur={() => setIsTyping(false)}
+							onFocus={focusHanlder}
+							onBlur={blurHandler}
 							placeholder="Task to be done..."
 							variant="underlined"
 						/>
@@ -86,7 +73,7 @@ const AddTodo: React.FC<Props> = ({ onAddTodo, setIsTyping }) => {
 							type="primary"
 							htmlType="submit"
 							size="large"
-							disabled={isFetching}
+							disabled={isAdding}
 						>
 							Добавить задачу
 						</Button>

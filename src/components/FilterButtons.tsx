@@ -1,42 +1,38 @@
-import { TodoFilter, TodoInfo } from "../types/todos";
-import { Segmented } from "antd";
+import { useDispatch, useSelector } from "react-redux";
+import { Segmented, SegmentedProps } from "antd";
+import { RootState } from "../store";
+import { setFilter } from "../store/todos/todos-slice";
+import { TodoFilter } from "../types/todos";
 
-interface Props {
-	onSetFilter: (filter: TodoFilter) => void;
-	todoInfo: TodoInfo;
-	filter: TodoFilter;
-}
+const FilterButtons: React.FC = () => {
+	const dispatch = useDispatch();
+	const todoInfo = useSelector((state: RootState) => state.todos.info);
+	const filter = useSelector((state: RootState) => state.todos.currentFilter);
 
-const FilterButtons: React.FC<Props> = ({ onSetFilter, todoInfo, filter }) => {
-	function isFilter(value: string): value is TodoFilter {
-		return value === "all" || value === "inWork" || value === "completed";
-	}
+	const setFilterHandler = (value: TodoFilter) => {
+		dispatch(setFilter(value));
+	};
 
-	function onUpdatingFilter(filter: string) {
-		if (!isFilter(filter)) return;
-		onSetFilter(filter);
-	}
-
-	const filterOptions = [
+	const filterOptions: SegmentedProps<TodoFilter>["options"] = [
 		{
-			label: `Все (${todoInfo.all})`,
+			label: `Все (${todoInfo?.all})`,
 			value: "all",
 		},
 		{
-			label: `В работе (${todoInfo.inWork})`,
+			label: `В работе (${todoInfo?.inWork})`,
 			value: "inWork",
 		},
 		{
-			label: `Завершено (${todoInfo.completed})`,
+			label: `Завершено (${todoInfo?.completed})`,
 			value: "completed",
 		},
 	];
 
 	return (
-		<Segmented<string>
+		<Segmented<TodoFilter>
 			options={filterOptions}
 			value={filter}
-			onChange={onUpdatingFilter}
+			onChange={setFilterHandler}
 		/>
 	);
 };

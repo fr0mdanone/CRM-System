@@ -8,36 +8,22 @@ import {
 	TodoInfo,
 } from "../types/todos";
 
-import { BASE_URL } from "../constants/todos.constants";
-
 export const getTodos = async (
 	filter: TodoFilter,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
-	try {
-		const response = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
-			params: { filter },
-		});
-		return response.data;
-	} catch (error) {
-		throw error;
-	}
+	const response = await api.get<MetaResponse<Todo, TodoInfo>>("/todos", {
+		params: { filter },
+	});
+	return response.data;
 };
 
 export const addTodo = async (newTodo: TodoRequest): Promise<Todo> => {
-	try {
-		const response = await api.post<Todo>("/todos", newTodo);
-		return response.data;
-	} catch (error) {
-		throw error;
-	}
+	const response = await api.post<Todo>("/todos", newTodo);
+	return response.data;
 };
 
 export const deleteTodo = async (id: number): Promise<void> => {
-	try {
-		await api.delete<string>(`/todos/${id}`);
-	} catch (error) {
-		throw error;
-	}
+	await api.delete<string>(`/todos/${id}`);
 };
 
 export const updateTodo = async (todo: Todo): Promise<Todo> => {
@@ -45,13 +31,6 @@ export const updateTodo = async (todo: Todo): Promise<Todo> => {
 		title: todo.title,
 		isDone: todo.isDone,
 	};
-	try {
-		const response = await api.put<Todo>(
-			`${BASE_URL}/todos/${todo.id}`,
-			dataToSend,
-		);
-		return response.data;
-	} catch (error) {
-		throw error;
-	}
+	const response = await api.put<Todo>(`/todos/${todo.id}`, dataToSend);
+	return response.data;
 };

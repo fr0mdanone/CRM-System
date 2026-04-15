@@ -1,7 +1,5 @@
-import { useContext, useState } from "react";
-import { updateTodo, deleteTodo } from "../api/todos";
+import { useState } from "react";
 import { Todo } from "../types/todos";
-import { TodoNotificationContext } from "../store/todos/notification-context";
 import { Flex, Form, Input, Button, Checkbox, Typography } from "antd";
 import {
 	CloseOutlined,
@@ -10,77 +8,100 @@ import {
 	SaveOutlined,
 } from "@ant-design/icons";
 import { TODO_TITLE_MAX, TODO_TITLE_MIN } from "../constants/todos.constants";
+import { useAppDispatch, useAppSelector } from "../store";
+import { deleteTodoThunk, updateTodoThunk } from "../store/todos/todos-actions";
+import { setIsLocked } from "../store/ui/ui-slice";
+import { setIsUpdating } from "../store/todos/todos-slice";
 
 interface Props {
 	todo: Todo;
-	onUpdateTodos: () => void;
-	setIsTyping: (value: boolean) => void;
 }
 
 type EditTodoFormValues = {
 	title: string;
 };
 
-const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
-	const { openTodoNotification } = useContext(TodoNotificationContext);
+const TodoItem: React.FC<Props> = ({ todo }) => {
+	const dispatch = useAppDispatch();
+	const isUpdating = useAppSelector((state) => state.todos.isUpdating);
+	const isDeleting = useAppSelector((state) => state.todos.isDeleting);
+
+	const [isToggling, setIsToggling] = useState<boolean>(false);
 	const [isEditing, setIsEditing] = useState<boolean>(false);
 	const [form] = Form.useForm();
-	const [isFetching, setIsFetching] = useState<boolean>(false);
 
-	const handleToggle = async (todo: Todo) => {
-		const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
-		try {
-			setIsFetching(true);
-			await updateTodo(updatedTodo);
-			onUpdateTodos();
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				openTodoNotification("error", error.message);
-			}
-		} finally {
-			setIsFetching(false);
-		}
+	const checkboxToggleHandler = async () => {
+		const updatedTodo = { ...todo, isDone: !todo.isDone };
+		setIsToggling(true);
+		await dispatch(updateTodoThunk(updatedTodo));
+		setIsToggling(false);
 	};
 
-	async function handleDeleteTodo(id: number) {
-		try {
-			setIsFetching(true);
-			await deleteTodo(id);
-			onUpdateTodos();
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				openTodoNotification("error", error.message);
-			}
-		} finally {
-			setIsFetching(false);
-		}
-	}
+	const deleteTodoHandler = () => {
+		dispatch(deleteTodoThunk(todo.id));
+	};
 
-	async function handleEditTodo(values: EditTodoFormValues) {
-		setIsTyping(false);
+	const updateTodoHandler = async (values: EditTodoFormValues) => {
+		dispatch(setIsUpdating(true));
 		const updatedTask = { ...todo, ...values };
-		try {
-			setIsFetching(true);
-			await updateTodo(updatedTask);
-			onUpdateTodos();
-			setIsEditing(false);
-		} catch (error: unknown) {
-			if (error instanceof Error) {
-				openTodoNotification("error", error.message);
-			}
-		} finally {
-			setIsFetching(false);
-		}
-	}
+		await dispatch(updateTodoThunk(updatedTask));
+		dispatch(setIsUpdating(false));
+		dispatch(setIsLocked(false));
+		setIsEditing(false);
+	};
 
-	const onEdit = (todo: Todo): void => {
-		setIsTyping(true);
+	// const handleToggle = async (todo: Todo) => {
+	// 	const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
+	// 	try {
+	// 		setIsFetching(true);
+	// 		await updateTodo(updatedTodo);
+	// 	} catch (error: unknown) {
+	// 		if (error instanceof Error) {
+	// 			openTodoNotification("error", error.message);
+	// 		}
+	// 	} finally {
+	// 		setIsFetching(false);
+	// 	}
+	// };
+
+	// async function handleDeleteTodo(id: number) {
+	// 	try {
+	// 		setIsFetching(true);
+	// 		await deleteTodo(id);
+	// 	} catch (error: unknown) {
+	// 		if (error instanceof Error) {
+	// 			openTodoNotification("error", error.message);
+	// 		}
+	// 	} finally {
+	// 		setIsFetching(false);
+	// 	}
+	// }
+
+	// async function handleEditTodo(values: EditTodoFormValues) {
+	// 	setIsTyping(false);
+	// 	const updatedTask = { ...todo, ...values };
+	// 	try {
+	// 		setIsFetching(true);
+	// 		await updateTodo(updatedTask);
+	// 		setIsEditing(false);
+	// 	} catch (error: unknown) {
+	// 		if (error instanceof Error) {
+	// 			openTodoNotification("error", error.message);
+	// 		}
+	// 	} finally {
+	// 		setIsFetching(false);
+	// 	}
+	// }
+
+	const onEdit = (): void => {
 		setIsEditing(true);
+		dispatch(setIsLocked(true));
 	};
 
 	const onCancel = () => {
 		setIsEditing(false);
 		form.resetFields();
+		dispatch(setIsLocked(false));
 	};
 
 	return (
@@ -98,8 +119,8 @@ const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
 						<Checkbox
 							type="checkbox"
 							checked={todo.isDone}
-							onChange={() => handleToggle(todo)}
-							disabled={isFetching}
+							onChange={checkboxToggleHandler}
+							disabled={isToggling}
 						/>
 						<Typography.Text
 							delete={todo.isDone}
@@ -109,18 +130,14 @@ const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
 						</Typography.Text>
 					</Flex>
 					<Flex justify="space-around" gap="small" style={{ minWidth: "25%" }}>
-						<Button
-							type="primary"
-							onClick={() => onEdit(todo)}
-							disabled={isFetching}
-						>
+						<Button type="primary" onClick={onEdit}>
 							<EditOutlined />
 						</Button>
 						<Button
 							type="primary"
 							danger
-							onClick={() => handleDeleteTodo(todo.id)}
-							disabled={isFetching}
+							onClick={deleteTodoHandler}
+							disabled={isDeleting}
 						>
 							<DeleteOutlined />
 						</Button>
@@ -129,8 +146,8 @@ const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
 			)}
 			{isEditing && (
 				<Form
-					onFinish={handleEditTodo}
-					disabled={isFetching}
+					onFinish={updateTodoHandler}
+					disabled={isUpdating}
 					form={form}
 					initialValues={{ title: todo.title }}
 				>
@@ -157,14 +174,11 @@ const TodoItem: React.FC<Props> = ({ todo, onUpdateTodos, setIsTyping }) => {
 								},
 							]}
 						>
-							<Input
-								onFocus={() => setIsTyping(true)}
-								onBlur={() => setIsTyping(false)}
-							/>
+							<Input />
 						</Form.Item>
 						<Flex gap="small">
 							<Form.Item>
-								<Button type="primary" disabled={isFetching} htmlType="submit">
+								<Button type="primary" disabled={isUpdating} htmlType="submit">
 									<SaveOutlined />
 								</Button>
 							</Form.Item>

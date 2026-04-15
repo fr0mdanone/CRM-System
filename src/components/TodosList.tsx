@@ -1,24 +1,15 @@
 import TodoItem from "./TodoItem";
 
-import { Todo } from "../types/todos";
 import { Flex } from "antd";
+import { useSelector } from "react-redux";
+import { RootState } from "../store";
 
-interface Props {
-	onUpdateTodos: () => void;
-	todos: Array<Todo>;
-	setIsTyping: (value: boolean) => void;
-}
-
-const TodosList: React.FC<Props> = ({ todos, onUpdateTodos, setIsTyping }) => {
+const TodosList: React.FC = () => {
+	const reduxTodos = useSelector((state: RootState) => state.todos.data);
 	return (
 		<Flex vertical gap="small">
-			{todos.map((todo) => (
-				<TodoItem
-					key={todo.id}
-					todo={todo}
-					onUpdateTodos={onUpdateTodos}
-					setIsTyping={setIsTyping}
-				/>
+			{reduxTodos.map((todo) => (
+				<TodoItem key={todo.id} todo={todo} />
 			))}
 		</Flex>
 	);
