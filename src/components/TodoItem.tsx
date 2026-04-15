@@ -50,49 +50,6 @@ const TodoItem: React.FC<Props> = ({ todo }) => {
 		setIsEditing(false);
 	};
 
-	// const handleToggle = async (todo: Todo) => {
-	// 	const updatedTodo: Todo = { ...todo, isDone: !todo.isDone };
-	// 	try {
-	// 		setIsFetching(true);
-	// 		await updateTodo(updatedTodo);
-	// 	} catch (error: unknown) {
-	// 		if (error instanceof Error) {
-	// 			openTodoNotification("error", error.message);
-	// 		}
-	// 	} finally {
-	// 		setIsFetching(false);
-	// 	}
-	// };
-
-	// async function handleDeleteTodo(id: number) {
-	// 	try {
-	// 		setIsFetching(true);
-	// 		await deleteTodo(id);
-	// 	} catch (error: unknown) {
-	// 		if (error instanceof Error) {
-	// 			openTodoNotification("error", error.message);
-	// 		}
-	// 	} finally {
-	// 		setIsFetching(false);
-	// 	}
-	// }
-
-	// async function handleEditTodo(values: EditTodoFormValues) {
-	// 	setIsTyping(false);
-	// 	const updatedTask = { ...todo, ...values };
-	// 	try {
-	// 		setIsFetching(true);
-	// 		await updateTodo(updatedTask);
-	// 		setIsEditing(false);
-	// 	} catch (error: unknown) {
-	// 		if (error instanceof Error) {
-	// 			openTodoNotification("error", error.message);
-	// 		}
-	// 	} finally {
-	// 		setIsFetching(false);
-	// 	}
-	// }
-
 	const onEdit = (): void => {
 		setIsEditing(true);
 		dispatch(setIsLocked(true));
