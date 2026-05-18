@@ -3,51 +3,63 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 type NotificationStatuses = "error" | "success" | "info";
 
 interface NotificationData {
-	status: NotificationStatuses;
-	title: string;
-	message: string;
+  status: NotificationStatuses;
+  title: string;
+  description: string;
 }
 
 interface notificationState {
-	notification: NotificationData | null;
-	isLocked: boolean;
+  notification: NotificationData | null;
+  isLocked: boolean;
 }
 
 const initialState: notificationState = {
-	notification: null,
-	isLocked: false,
+  notification: null,
+  isLocked: false,
 };
 
 const titles: Record<NotificationStatuses, string> = {
-	error: "Ошибка!",
-	success: "Выполнено!",
-	info: "Внимание!",
+  error: "Ошибка!",
+  success: "Выполнено!",
+  info: "Внимание!",
 };
 
 const uiSlice = createSlice({
-	name: "ui",
-	initialState,
-	reducers: {
-		setNotification: (
-			state,
-			action: PayloadAction<{ status: NotificationStatuses; message: string }>,
-		) => {
-			state.notification = {
-				status: action.payload.status,
-				title: titles[action.payload.status],
-				message: action.payload.message,
-			};
-		},
-		clearNotification: (state) => {
-			state.notification = null;
-		},
-		setIsLocked: (state, action: PayloadAction<boolean>) => {
-			state.isLocked = action.payload;
-		},
-	},
+  name: "ui",
+  initialState,
+  reducers: {
+    setNotification: (
+      state,
+      action: PayloadAction<{ status: NotificationStatuses; message: string }>,
+    ) => {
+      state.notification = {
+        status: action.payload.status,
+        title: titles[action.payload.status],
+        description: action.payload.message,
+      };
+    },
+    clearNotification: (state) => {
+      state.notification = null;
+    },
+    setIsLocked: (state, action: PayloadAction<boolean>) => {
+      state.isLocked = action.payload;
+    },
+  },
+  extraReducers: (builder) => {
+    builder.addMatcher(
+      (action) => action.type.endsWith("/rejected"),
+      (state: notificationState, action: PayloadAction<string>) => {
+        state.notification = {
+          status: "error",
+          title: titles["error"],
+          description: (action.payload as string) || "Произошла ошибка",
+        };
+      },
+    );
+  },
 });
 
 export const { setNotification, clearNotification, setIsLocked } =
-	uiSlice.actions;
+  uiSlice.actions;
 
 export default uiSlice.reducer;
