@@ -1,3 +1,4 @@
+import { clearToken, setAccessToken } from "../../utils/auth";
 import { publicApi, privateApi } from "../axios/axios";
 
 import {
@@ -20,7 +21,7 @@ export const registerUser = async (
 
 export const loginUser = async (data: AuthData): Promise<Token> => {
   const response = await publicApi.post("/auth/signin", data);
-  localStorage.setItem("accessToken", response.data.accessToken);
+  setAccessToken(response.data.accessToken);
   localStorage.setItem("refreshToken", response.data.refreshToken);
   return response.data;
 };
@@ -29,7 +30,7 @@ export const logoutUser = async (): Promise<void> => {
   try {
     await privateApi.post("/auth/logout");
   } finally {
-    localStorage.removeItem("accessToken");
+    clearToken();
     localStorage.removeItem("refreshToken");
   }
 };

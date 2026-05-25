@@ -1,4 +1,4 @@
-import { Card, Typography } from "antd";
+import { Card, Flex, Spin, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect } from "react";
 import { getUserProfileThunk } from "../store/user/user-actions";
@@ -13,8 +13,16 @@ const ProfilePage: React.FC = () => {
     }
   }, [profile, dispatch]);
 
-  if (!profile) {
-    return <Typography.Paragraph>Загрузка профиля...</Typography.Paragraph>;
+  const isProfileLoading = useAppSelector(
+    (state) => state.user.isProfileLoading,
+  );
+
+  if (isProfileLoading || !profile) {
+    return (
+      <Flex align="center" justify="center" style={{ height: "100vh" }}>
+        <Spin tip="Загрузка профиля" size="large" />
+      </Flex>
+    );
   }
 
   const { username, email, phoneNumber } = profile;

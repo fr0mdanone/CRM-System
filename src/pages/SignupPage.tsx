@@ -1,17 +1,28 @@
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input, Result, Typography } from "antd";
 import { UserRegistration } from "../types/auth";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { registerThunk } from "../store/user/user-actions";
 import { Link, useNavigate } from "react-router";
+import { useState } from "react";
 
 const SignupPage: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const isRegisterLoading = useAppSelector(
+    (state) => state.user.isRegisterLoading,
+  );
 
   function signupHandler(values: UserRegistration) {
     dispatch(
-      registerThunk({ data: values, onSuccess: () => navigate("/login") }),
+      registerThunk({
+        data: values,
+        onSuccess: () => {
+          setIsSuccess(true);
+          form.resetFields();
+        },
+      }),
     );
   }
 
@@ -24,6 +35,27 @@ const SignupPage: React.FC = () => {
     }
     return Promise.resolve();
   };
+
+  function confirmSuccessHandler() {
+    setIsSuccess(false);
+    navigate("/login");
+  }
+
+  if (isSuccess) {
+    return (
+      <>
+        <Result
+          status="success"
+          title="Регистрация прошла успешно!"
+          extra={
+            <Button type="primary" onClick={confirmSuccessHandler}>
+              Авторизоваться
+            </Button>
+          }
+        />
+      </>
+    );
+  }
 
   return (
     <>
@@ -159,6 +191,7 @@ const SignupPage: React.FC = () => {
             type="primary"
             htmlType="submit"
             style={{ backgroundColor: "#7F265B", borderColor: "#7F265B" }}
+            loading={isRegisterLoading}
           >
             Зарегистрироваться
           </Button>

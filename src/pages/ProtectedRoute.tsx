@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useAppSelector } from "../store";
 
 const ProtectedRoute: React.FC = () => {
-  const auth = useAppSelector((state) => state.user.isAuth);
+  const isAuth = useAppSelector((state) => state.user.isAuth);
 
-  if (!auth) {
+  if (!isAuth) {
     return <Navigate to="/login" replace />;
   }
 

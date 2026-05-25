@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../constants/todos.constants";
 import { logout } from "../store/user/user-slice";
 import { store } from "../store";
+import { getAccessToken, setAccessToken } from "../../utils/auth";
 
 export const publicApi = axios.create({
   withCredentials: true,
@@ -17,7 +18,7 @@ export const privateApi = axios.create({
 
 privateApi.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("accessToken");
+    const token = getAccessToken();
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -38,7 +39,7 @@ privateApi.interceptors.response.use(
           refreshToken,
         });
         const { accessToken, refreshToken: newRefreshToken } = response.data;
-        localStorage.setItem("accessToken", accessToken);
+        setAccessToken(accessToken);
         localStorage.setItem("refreshToken", newRefreshToken);
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return privateApi(originalRequest);

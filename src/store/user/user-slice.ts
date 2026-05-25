@@ -1,18 +1,22 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Profile, Token } from "../../types/auth";
 import { getUserProfileThunk, loginThunk, registerThunk } from "./user-actions";
-import { isAuthenticated } from "../../../utils/auth";
+import { clearToken, isAuthenticated } from "../../../utils/auth";
 
 interface UserState {
   isAuth: boolean;
   profile: Profile | null;
-  isLoading: boolean;
+  isLoginLoading: boolean;
+  isRegisterLoading: boolean;
+  isProfileLoading: boolean;
 }
 
 const userState: UserState = {
   isAuth: isAuthenticated(),
   profile: null,
-  isLoading: false,
+  isLoginLoading: false,
+  isRegisterLoading: false,
+  isProfileLoading: false,
 };
 
 export const userSlice = createSlice({
@@ -22,31 +26,46 @@ export const userSlice = createSlice({
     logout: (state) => {
       state.isAuth = false;
       state.profile = null;
-      localStorage.removeItem("accessToken");
+      clearToken();
       localStorage.removeItem("refreshToken");
     },
   },
   extraReducers: (builder) => {
     builder
+      .addCase(loginThunk.pending, (state) => {
+        state.isLoginLoading = true;
+      })
       .addCase(loginThunk.fulfilled, (state, action) => {
         state.isAuth = true;
+        state.isLoginLoading = false;
       })
       .addCase(loginThunk.rejected, (state, action) => {
         state.isAuth = false;
-        localStorage.removeItem("accessToken");
+        state.isLoginLoading = false;
+        clearToken();
         localStorage.removeItem("refreshToken");
+      })
+      .addCase(registerThunk.pending, (state) => {
+        state.isRegisterLoading = true;
       })
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.profile = action.payload;
+        state.isRegisterLoading = false;
       })
       .addCase(registerThunk.rejected, (state, action) => {
         state.profile = null;
+        state.isRegisterLoading = false;
+      })
+      .addCase(getUserProfileThunk.pending, (state) => {
+        state.isProfileLoading = true;
       })
       .addCase(getUserProfileThunk.fulfilled, (state, action) => {
         state.profile = action.payload;
+        state.isProfileLoading = false;
       })
       .addCase(getUserProfileThunk.rejected, (state) => {
         state.profile = null;
+        state.isProfileLoading = false;
       });
   },
 });

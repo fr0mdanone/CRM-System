@@ -1,7 +1,7 @@
 import { Button, Form, Input, Image, Flex, Typography } from "antd";
 import decoration from "../assets/decoraction.svg";
 import { AuthData } from "../types/auth";
-import { useAppDispatch } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 import { loginThunk } from "../store/user/user-actions";
 import { Link, useNavigate } from "react-router";
 
@@ -9,6 +9,7 @@ const AuthPage: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const isLoginLoading = useAppSelector((state) => state.user.isLoginLoading);
 
   const loginHandler = (values: AuthData) => {
     dispatch(loginThunk({ authData: values, onSuccess: () => navigate("/") }));
@@ -42,6 +43,7 @@ const AuthPage: React.FC = () => {
               type="primary"
               style={{ backgroundColor: "#7F265B", borderColor: "#7F265B" }}
               htmlType="submit"
+              loading={isLoginLoading}
             >
               Login
             </Button>
