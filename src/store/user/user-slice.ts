@@ -1,7 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Profile, Token } from "../../types/auth";
-import { getUserProfileThunk, loginThunk, registerThunk } from "./user-actions";
-import { clearToken, isAuthenticated } from "../../../utils/auth";
+import {
+  getUserProfileThunk,
+  loginThunk,
+  registerThunk,
+  silentRefreshThunk,
+} from "./user-actions";
+import { clearToken } from "../../../utils/auth";
 
 interface UserState {
   isAuth: boolean;
@@ -12,7 +17,7 @@ interface UserState {
 }
 
 const userState: UserState = {
-  isAuth: isAuthenticated(),
+  isAuth: false,
   profile: null,
   isLoginLoading: false,
   isRegisterLoading: false,
@@ -32,14 +37,27 @@ export const userSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(silentRefreshThunk.pending, (state) => {
+        state.isProfileLoading = true;
+      })
+      .addCase(silentRefreshThunk.fulfilled, (state, action) => {
+        state.profile = action.payload;
+        state.isProfileLoading = false;
+      })
+      .addCase(silentRefreshThunk.rejected, (state) => {
+        state.profile = null;
+        state.isProfileLoading = false;
+      })
       .addCase(loginThunk.pending, (state) => {
         state.isLoginLoading = true;
       })
       .addCase(loginThunk.fulfilled, (state, action) => {
+        state.profile = action.payload;
         state.isAuth = true;
         state.isLoginLoading = false;
       })
-      .addCase(loginThunk.rejected, (state, action) => {
+      .addCase(loginThunk.rejected, (state) => {
+        state.profile = null;
         state.isAuth = false;
         state.isLoginLoading = false;
         clearToken();
@@ -52,7 +70,7 @@ export const userSlice = createSlice({
         state.profile = action.payload;
         state.isRegisterLoading = false;
       })
-      .addCase(registerThunk.rejected, (state, action) => {
+      .addCase(registerThunk.rejected, (state) => {
         state.profile = null;
         state.isRegisterLoading = false;
       })

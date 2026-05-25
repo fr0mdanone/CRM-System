@@ -1,16 +1,7 @@
 import { clearToken, setAccessToken } from "../../utils/auth";
 import { publicApi, privateApi } from "../axios/axios";
 
-import {
-  UserRegistration,
-  AuthData,
-  RefreshToken,
-  Profile,
-  ProfileRequest,
-  PasswordRequest,
-  Token,
-  Role,
-} from "../types/auth";
+import { UserRegistration, AuthData, Profile } from "../types/auth";
 
 export const registerUser = async (
   data: UserRegistration,
@@ -19,11 +10,10 @@ export const registerUser = async (
   return response.data;
 };
 
-export const loginUser = async (data: AuthData): Promise<Token> => {
+export const loginUser = async (data: AuthData): Promise<void> => {
   const response = await publicApi.post("/auth/signin", data);
   setAccessToken(response.data.accessToken);
   localStorage.setItem("refreshToken", response.data.refreshToken);
-  return response.data;
 };
 
 export const logoutUser = async (): Promise<void> => {
@@ -35,7 +25,18 @@ export const logoutUser = async (): Promise<void> => {
   }
 };
 
-export const getUserProfile = async (): Promise<Profile> => {
+export const fetchUserProfile = async (): Promise<Profile> => {
   const response = await privateApi.get("/user/profile");
   return response.data;
+};
+
+export const silentRefresh = async (): Promise<void> => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) {
+    throw new Error("No refresh token available");
+  }
+  const response = await publicApi.post("/auth/refresh", { refreshToken });
+  const { accessToken, refreshToken: newRefreshToken } = response.data;
+  setAccessToken(accessToken);
+  localStorage.setItem("refreshToken", newRefreshToken);
 };

@@ -9,8 +9,3 @@ export const getAccessToken = (): string | null => {
 export const clearToken = () => {
   accessToken = null;
 };
-
-export const isAuthenticated = (): boolean => {
-  const refreshToken = localStorage.getItem("refreshToken");
-  return !!refreshToken;
-};

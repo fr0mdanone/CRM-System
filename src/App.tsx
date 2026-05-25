@@ -11,6 +11,7 @@ import AuthLayout from "./pages/AuthLayout/AuthLayout";
 import AuthPage from "./pages/AuthPage";
 import SignupPage from "./pages/SignupPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import { silentRefreshThunk } from "./store/user/user-actions";
 
 const router = createBrowserRouter([
   {
@@ -51,8 +52,15 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const [api, contextHolder] = notification.useNotification();
+  const hasRefreshToken = !!localStorage.getItem("refreshToken");
 
   const notificationData = useAppSelector((state) => state.ui.notification);
+
+  useEffect(() => {
+    if (hasRefreshToken) {
+      dispatch(silentRefreshThunk());
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (notificationData) {

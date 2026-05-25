@@ -1,12 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch } from "..";
 import {
-  getUserProfile,
+  fetchUserProfile,
   loginUser,
   logoutUser,
   registerUser,
+  silentRefresh,
 } from "../../api/auth";
-import { AuthData, Profile, Token, UserRegistration } from "../../types/auth";
+import { AuthData, Profile, UserRegistration } from "../../types/auth";
 import { setNotification } from "../ui/ui-slice";
 import axios from "axios";
 import { logout } from "./user-slice";
@@ -38,14 +39,15 @@ export const registerThunk = createAsyncThunk<
 );
 
 export const loginThunk = createAsyncThunk<
-  Token,
+  Profile,
   { authData: AuthData; onSuccess: () => void },
   { rejectValue: string; dispatch: AppDispatch }
 >(
   "user/loginUser",
   async ({ authData, onSuccess }, { dispatch, rejectWithValue }) => {
     try {
-      const token = await loginUser(authData);
+      await loginUser(authData);
+      const profile = await fetchUserProfile();
       dispatch(
         setNotification({
           status: "success",
@@ -53,7 +55,7 @@ export const loginThunk = createAsyncThunk<
         }),
       );
       onSuccess();
-      return token;
+      return profile;
     } catch (error) {
       const errorMessage = axios.isAxiosError(error)
         ? error.response?.data?.message || error.message
@@ -92,12 +94,31 @@ export const getUserProfileThunk = createAsyncThunk<
   { rejectValue: string }
 >("user/getProfile", async (_, { rejectWithValue }) => {
   try {
-    const profile = await getUserProfile();
+    const profile = await fetchUserProfile();
     return profile;
   } catch (error) {
     const errorMessage = axios.isAxiosError(error)
       ? error.response?.data?.message || error.message
       : "Что-то пошло не так...";
+    return rejectWithValue(errorMessage);
+  }
+});
+
+export const silentRefreshThunk = createAsyncThunk<
+  Profile,
+  void,
+  { rejectValue: string }
+>("user/silentRefresh", async (_, { dispatch, rejectWithValue }) => {
+  try {
+    await silentRefresh();
+    const profile = await fetchUserProfile();
+    return profile;
+  } catch (error) {
+    dispatch(logout());
+    const errorMessage = axios.isAxiosError(error)
+      ? error.response?.data?.message || error.message
+      : "Что-то пошло не так...";
+    dispatch(setNotification({ status: "error", message: errorMessage }));
     return rejectWithValue(errorMessage);
   }
 });
