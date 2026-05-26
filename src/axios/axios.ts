@@ -1,6 +1,6 @@
 import axios from "axios";
 import { BASE_URL } from "../constants/todos.constants";
-import { logout } from "../store/user/user-slice";
+import { logout } from "../store/auth/auth-slice";
 import { store } from "../store";
 import { getAccessToken, setAccessToken } from "../../utils/auth";
 

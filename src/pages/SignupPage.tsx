@@ -1,7 +1,7 @@
 import { Button, Form, Input, Result, Typography } from "antd";
 import { UserRegistration } from "../types/auth";
 import { useAppDispatch, useAppSelector } from "../store";
-import { registerThunk } from "../store/user/user-actions";
+import { registerThunk } from "../store/auth/auth-actions";
 import { Link, useNavigate } from "react-router";
 import { useState } from "react";
 

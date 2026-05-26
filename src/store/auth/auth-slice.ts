@@ -5,7 +5,7 @@ import {
   loginThunk,
   registerThunk,
   silentRefreshThunk,
-} from "./user-actions";
+} from "./auth-actions";
 import { clearToken } from "../../../utils/auth";
 
 interface UserState {

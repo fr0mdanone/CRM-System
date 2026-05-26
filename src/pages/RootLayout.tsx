@@ -4,7 +4,7 @@ import { Content } from "antd/es/layout/layout";
 import { Outlet } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { useAppDispatch } from "../store";
-import { logout } from "../store/user/user-slice";
+import { logout } from "../store/auth/auth-slice";
 
 const RootLayout: React.FC = () => {
   const dispatch = useAppDispatch();

@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "..";
-import { addTodo, deleteTodo, getTodos, updateTodo } from "../../api/todos";
+import { addTodo, deleteTodo, fetchTodos, updateTodo } from "../../api/todos";
 import { MetaResponse, Todo, TodoInfo } from "../../types/todos";
 import { setNotification } from "../ui/ui-slice";
 import axios from "axios";
@@ -12,7 +12,7 @@ export const fetchTodosThunk = createAsyncThunk<
 >("todos/fetchTodos", async (_, { getState, rejectWithValue }) => {
   const filter = getState().todos.currentFilter;
   try {
-    const todosData = await getTodos(filter);
+    const todosData = await fetchTodos(filter);
     return todosData;
   } catch (error) {
     const errorMessage = axios.isAxiosError(error)

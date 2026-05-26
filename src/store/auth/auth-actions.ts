@@ -10,7 +10,7 @@ import {
 import { AuthData, Profile, UserRegistration } from "../../types/auth";
 import { setNotification } from "../ui/ui-slice";
 import axios from "axios";
-import { logout } from "./user-slice";
+import { logout } from "./auth-slice";
 
 export const registerThunk = createAsyncThunk<
   Profile,

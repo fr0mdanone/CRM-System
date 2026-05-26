@@ -1,7 +1,7 @@
 import { Card, Flex, Spin, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect } from "react";
-import { getUserProfileThunk } from "../store/user/user-actions";
+import { getUserProfileThunk } from "../store/auth/auth-actions";
 
 const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch();

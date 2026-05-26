@@ -2,7 +2,7 @@ import { Button, Form, Input, Image, Flex, Typography } from "antd";
 import decoration from "../assets/decoraction.svg";
 import { AuthData } from "../types/auth";
 import { useAppDispatch, useAppSelector } from "../store";
-import { loginThunk } from "../store/user/user-actions";
+import { loginThunk } from "../store/auth/auth-actions";
 import { Link, useNavigate } from "react-router";
 
 const AuthPage: React.FC = () => {

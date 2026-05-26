@@ -8,7 +8,7 @@ import {
   TodoInfo,
 } from "../types/todos";
 
-export const getTodos = async (
+export const fetchTodos = async (
   filter: TodoFilter,
 ): Promise<MetaResponse<Todo, TodoInfo>> => {
   const response = await privateApi.get<MetaResponse<Todo, TodoInfo>>(
