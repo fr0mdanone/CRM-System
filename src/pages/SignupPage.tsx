@@ -11,10 +11,10 @@ const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const isRegisterLoading = useAppSelector(
-    (state) => state.user.isRegisterLoading,
+    (state) => state.auth.isRegisterLoading,
   );
 
-  function signupHandler(values: UserRegistration) {
+  const signupHandler = (values: UserRegistration) => {
     dispatch(
       registerThunk({
         data: values,
@@ -24,7 +24,7 @@ const SignupPage: React.FC = () => {
         },
       }),
     );
-  }
+  };
 
   const validatePasswordMatch = () => {
     const password = form.getFieldValue("password");

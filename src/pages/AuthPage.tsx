@@ -9,7 +9,7 @@ const AuthPage: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const isLoginLoading = useAppSelector((state) => state.user.isLoginLoading);
+  const isLoginLoading = useAppSelector((state) => state.auth.isLoginLoading);
 
   const loginHandler = (values: AuthData) => {
     dispatch(loginThunk({ authData: values, onSuccess: () => navigate("/") }));

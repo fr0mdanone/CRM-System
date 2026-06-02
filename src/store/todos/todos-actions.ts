@@ -1,5 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch, RootState } from "..";
+import { AppDispatch, RootState } from "../index";
 import { addTodo, deleteTodo, fetchTodos, updateTodo } from "../../api/todos";
 import { MetaResponse, Todo, TodoInfo } from "../../types/todos";
 import { setNotification } from "../ui/ui-slice";

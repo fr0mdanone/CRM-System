@@ -11,7 +11,7 @@ export interface AuthData {
   password: string;
 }
 
-export interface Profile {
+export interface User {
   id: number;
   username: string;
   email: string;

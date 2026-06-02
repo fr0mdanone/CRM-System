@@ -6,6 +6,6 @@ export const setAccessToken = (token: string) => {
 export const getAccessToken = (): string | null => {
   return accessToken;
 };
-export const clearToken = () => {
+export const clearAccessToken = () => {
   accessToken = null;
 };

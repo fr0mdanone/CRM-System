@@ -30,57 +30,55 @@ const AddTodo: React.FC = () => {
   };
 
   return (
-    <>
-      <Form form={form} onFinish={addTodoHandler} disabled={isAdding}>
-        <Flex
-          align="center"
-          justify="space-between"
-          gap="large"
-          style={{ width: "500px" }}
+    <Form form={form} onFinish={addTodoHandler} disabled={isAdding}>
+      <Flex
+        align="center"
+        justify="space-between"
+        gap="large"
+        style={{ width: "500px" }}
+      >
+        <Form.Item
+          name="title"
+          rules={[
+            {
+              required: true,
+              whitespace: true,
+              message: "Введите текст задачи",
+            },
+            {
+              transform: (value) =>
+                typeof value === "string" ? value.trim() : value,
+              min: TODO_TITLE_MIN,
+              message: "Текст задачи должен состоять минимум из 2 символов",
+            },
+            {
+              transform: (value) =>
+                typeof value === "string" ? value.trim() : value,
+              max: TODO_TITLE_MAX,
+              message: "Текст задачи не должен превышать 64 символа",
+            },
+          ]}
+          style={{ width: "70%" }}
         >
-          <Form.Item
-            name="title"
-            rules={[
-              {
-                required: true,
-                whitespace: true,
-                message: "Введите текст задачи",
-              },
-              {
-                transform: (value) =>
-                  typeof value === "string" ? value.trim() : value,
-                min: TODO_TITLE_MIN,
-                message: "Текст задачи должен состоять минимум из 2 символов",
-              },
-              {
-                transform: (value) =>
-                  typeof value === "string" ? value.trim() : value,
-                max: TODO_TITLE_MAX,
-                message: "Текст задачи не должен превышать 64 символа",
-              },
-            ]}
-            style={{ width: "70%" }}
+          <Input
+            onFocus={focusHanlder}
+            onBlur={blurHandler}
+            placeholder="Task to be done..."
+            variant="underlined"
+          />
+        </Form.Item>
+        <Form.Item>
+          <Button
+            type="primary"
+            htmlType="submit"
+            size="large"
+            disabled={isAdding}
           >
-            <Input
-              onFocus={focusHanlder}
-              onBlur={blurHandler}
-              placeholder="Task to be done..."
-              variant="underlined"
-            />
-          </Form.Item>
-          <Form.Item>
-            <Button
-              type="primary"
-              htmlType="submit"
-              size="large"
-              disabled={isAdding}
-            >
-              Добавить задачу
-            </Button>
-          </Form.Item>
-        </Flex>
-      </Form>
-    </>
+            Добавить задачу
+          </Button>
+        </Form.Item>
+      </Flex>
+    </Form>
   );
 };
 

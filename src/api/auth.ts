@@ -1,11 +1,9 @@
-import { clearToken, setAccessToken } from "../../utils/auth";
+import { clearAccessToken, setAccessToken } from "../../utils/auth";
 import { publicApi, privateApi } from "../axios/axios";
 
-import { UserRegistration, AuthData, Profile } from "../types/auth";
+import { UserRegistration, AuthData, User } from "../types/auth";
 
-export const registerUser = async (
-  data: UserRegistration,
-): Promise<Profile> => {
+export const registerUser = async (data: UserRegistration): Promise<User> => {
   const response = await publicApi.post("/auth/signup", data);
   return response.data;
 };
@@ -20,17 +18,17 @@ export const logoutUser = async (): Promise<void> => {
   try {
     await privateApi.post("/auth/logout");
   } finally {
-    clearToken();
+    clearAccessToken();
     localStorage.removeItem("refreshToken");
   }
 };
 
-export const fetchUserProfile = async (): Promise<Profile> => {
+export const fetchUserProfile = async (): Promise<User> => {
   const response = await privateApi.get("/user/profile");
   return response.data;
 };
 
-export const silentRefresh = async (): Promise<void> => {
+export const silentRefreshToken = async (): Promise<void> => {
   const refreshToken = localStorage.getItem("refreshToken");
   if (!refreshToken) {
     throw new Error("No refresh token available");

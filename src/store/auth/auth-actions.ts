@@ -1,23 +1,23 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { AppDispatch } from "..";
+import { AppDispatch } from "../index";
 import {
   fetchUserProfile,
   loginUser,
   logoutUser,
   registerUser,
-  silentRefresh,
+  silentRefreshToken,
 } from "../../api/auth";
-import { AuthData, Profile, UserRegistration } from "../../types/auth";
+import { AuthData, User, UserRegistration } from "../../types/auth";
 import { setNotification } from "../ui/ui-slice";
 import axios from "axios";
 import { logout } from "./auth-slice";
 
 export const registerThunk = createAsyncThunk<
-  Profile,
+  User,
   { data: UserRegistration; onSuccess: () => void },
   { rejectValue: string; dispatch: AppDispatch }
 >(
-  "user/registerUser",
+  "auth/registerUser",
   async ({ data, onSuccess }, { dispatch, rejectWithValue }) => {
     try {
       const response = await registerUser(data);
@@ -39,11 +39,11 @@ export const registerThunk = createAsyncThunk<
 );
 
 export const loginThunk = createAsyncThunk<
-  Profile,
+  User,
   { authData: AuthData; onSuccess: () => void },
   { rejectValue: string; dispatch: AppDispatch }
 >(
-  "user/loginUser",
+  "auth/loginUser",
   async ({ authData, onSuccess }, { dispatch, rejectWithValue }) => {
     try {
       await loginUser(authData);
@@ -69,7 +69,7 @@ export const logoutThunk = createAsyncThunk<
   void,
   void,
   { dispatch: AppDispatch }
->("user/logout", async (_, { dispatch }) => {
+>("auth/logout", async (_, { dispatch }) => {
   try {
     await logoutUser();
     dispatch(
@@ -88,11 +88,11 @@ export const logoutThunk = createAsyncThunk<
   }
 });
 
-export const getUserProfileThunk = createAsyncThunk<
-  Profile,
+export const fetchUserProfileThunk = createAsyncThunk<
+  User,
   void,
   { rejectValue: string }
->("user/getProfile", async (_, { rejectWithValue }) => {
+>("auth/fetchProfile", async (_, { rejectWithValue }) => {
   try {
     const profile = await fetchUserProfile();
     return profile;
@@ -105,12 +105,12 @@ export const getUserProfileThunk = createAsyncThunk<
 });
 
 export const silentRefreshThunk = createAsyncThunk<
-  Profile,
+  User,
   void,
   { rejectValue: string }
->("user/silentRefresh", async (_, { dispatch, rejectWithValue }) => {
+>("auth/silentRefreshToken", async (_, { dispatch, rejectWithValue }) => {
   try {
-    await silentRefresh();
+    await silentRefreshToken();
     const profile = await fetchUserProfile();
     return profile;
   } catch (error) {

@@ -13,24 +13,22 @@ const RootLayout: React.FC = () => {
     dispatch(logout());
   };
   return (
-    <>
-      <Layout style={{ minHeight: "100vh" }}>
-        <Sider width="15%">
-          <Sidebar />
-          <Button
-            type="primary"
-            color="red"
-            style={{ margin: "20px" }}
-            onClick={logoutHandler}
-          >
-            Выйти
-          </Button>
-        </Sider>
-        <Content>
-          <Outlet />
-        </Content>
-      </Layout>
-    </>
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider width="15%">
+        <Sidebar />
+        <Button
+          type="primary"
+          color="red"
+          style={{ margin: "20px" }}
+          onClick={logoutHandler}
+        >
+          Выйти
+        </Button>
+      </Sider>
+      <Content>
+        <Outlet />
+      </Content>
+    </Layout>
   );
 };
 

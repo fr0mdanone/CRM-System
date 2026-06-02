@@ -1,20 +1,20 @@
 import { Card, Flex, Spin, Typography } from "antd";
 import { useAppDispatch, useAppSelector } from "../store";
 import { useEffect } from "react";
-import { getUserProfileThunk } from "../store/auth/auth-actions";
+import { fetchUserProfileThunk } from "../store/auth/auth-actions";
 
 const ProfilePage: React.FC = () => {
   const dispatch = useAppDispatch();
-  const profile = useAppSelector((state) => state.user.profile);
+  const profile = useAppSelector((state) => state.auth.profile);
 
   useEffect(() => {
     if (!profile) {
-      dispatch(getUserProfileThunk());
+      dispatch(fetchUserProfileThunk());
     }
   }, [profile, dispatch]);
 
   const isProfileLoading = useAppSelector(
-    (state) => state.user.isProfileLoading,
+    (state) => state.auth.isProfileLoading,
   );
 
   if (isProfileLoading || !profile) {
