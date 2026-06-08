@@ -47,7 +47,9 @@ const uiSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addMatcher(
-      (action) => action.type.endsWith("/rejected"),
+      (action) =>
+        action.type.endsWith("/rejected") &&
+        !action.type.includes("auth/silentRefreshToken"),
       (state: notificationState, action: PayloadAction<string>) => {
         state.notification = {
           status: "error",

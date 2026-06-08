@@ -3,7 +3,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import TodoPage from "./pages/TodoPage";
 import ProfilePage from "./pages/ProfilePage";
 import RootLayout from "./pages/RootLayout";
-import { notification } from "antd";
+import { notification, Spin } from "antd";
 import { useAppDispatch, useAppSelector } from "./store";
 import { useEffect } from "react";
 import { clearNotification } from "./store/ui/ui-slice";
@@ -52,14 +52,12 @@ const router = createBrowserRouter([
 const App: React.FC = () => {
   const dispatch = useAppDispatch();
   const [api, contextHolder] = notification.useNotification();
-  const hasRefreshToken = !!localStorage.getItem("refreshToken");
 
+  const { isInitialized } = useAppSelector((state) => state.auth);
   const notificationData = useAppSelector((state) => state.ui.notification);
 
   useEffect(() => {
-    if (hasRefreshToken) {
-      dispatch(silentRefreshThunk());
-    }
+    dispatch(silentRefreshThunk());
   }, [dispatch]);
 
   useEffect(() => {
@@ -74,6 +72,13 @@ const App: React.FC = () => {
       dispatch(clearNotification());
     }
   }, [notificationData, api, dispatch]);
+
+  if (!isInitialized) {
+    return (
+      <Spin size="large" style={{ display: "block", margin: "100px auto" }} />
+    );
+  }
+
   return (
     <>
       {contextHolder}

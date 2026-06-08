@@ -10,7 +10,7 @@ import {
 import { AuthData, User, UserRegistration } from "../../types/auth";
 import { setNotification } from "../ui/ui-slice";
 import axios from "axios";
-import { logout } from "./auth-slice";
+import { logout, setInitialized } from "./auth-slice";
 
 export const registerThunk = createAsyncThunk<
   User,
@@ -109,6 +109,12 @@ export const silentRefreshThunk = createAsyncThunk<
   void,
   { rejectValue: string }
 >("auth/silentRefreshToken", async (_, { dispatch, rejectWithValue }) => {
+  const refreshToken = localStorage.getItem("refreshToken");
+  if (!refreshToken) {
+    dispatch(setInitialized());
+    return rejectWithValue("Нет рефреш токена");
+  }
+
   try {
     await silentRefreshToken();
     const profile = await fetchUserProfile();

@@ -14,6 +14,7 @@ interface AuthState {
   isLoginLoading: boolean;
   isRegisterLoading: boolean;
   isProfileLoading: boolean;
+  isInitialized: boolean;
 }
 
 const authState: AuthState = {
@@ -22,6 +23,7 @@ const authState: AuthState = {
   isLoginLoading: false,
   isRegisterLoading: false,
   isProfileLoading: false,
+  isInitialized: false,
 };
 
 export const authSlice = createSlice({
@@ -34,6 +36,9 @@ export const authSlice = createSlice({
       clearAccessToken();
       localStorage.removeItem("refreshToken");
     },
+    setInitialized: (state) => {
+      state.isInitialized = true;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -43,10 +48,14 @@ export const authSlice = createSlice({
       .addCase(silentRefreshThunk.fulfilled, (state, action) => {
         state.profile = action.payload;
         state.isProfileLoading = false;
+        state.isAuth = true;
+        state.isInitialized = true;
       })
       .addCase(silentRefreshThunk.rejected, (state) => {
         state.profile = null;
         state.isProfileLoading = false;
+        state.isAuth = false;
+        state.isInitialized = true;
       })
       .addCase(loginThunk.pending, (state) => {
         state.isLoginLoading = true;
@@ -55,11 +64,13 @@ export const authSlice = createSlice({
         state.profile = action.payload;
         state.isAuth = true;
         state.isLoginLoading = false;
+        state.isInitialized = true;
       })
       .addCase(loginThunk.rejected, (state) => {
         state.profile = null;
         state.isAuth = false;
         state.isLoginLoading = false;
+        state.isInitialized = true;
         clearAccessToken();
         localStorage.removeItem("refreshToken");
       })
@@ -69,10 +80,12 @@ export const authSlice = createSlice({
       .addCase(registerThunk.fulfilled, (state, action) => {
         state.profile = action.payload;
         state.isRegisterLoading = false;
+        state.isInitialized = true;
       })
       .addCase(registerThunk.rejected, (state) => {
         state.profile = null;
         state.isRegisterLoading = false;
+        state.isInitialized = true;
       })
       .addCase(fetchUserProfileThunk.pending, (state) => {
         state.isProfileLoading = true;
@@ -80,14 +93,16 @@ export const authSlice = createSlice({
       .addCase(fetchUserProfileThunk.fulfilled, (state, action) => {
         state.profile = action.payload;
         state.isProfileLoading = false;
+        state.isInitialized = true;
       })
       .addCase(fetchUserProfileThunk.rejected, (state) => {
         state.profile = null;
         state.isProfileLoading = false;
+        state.isInitialized = true;
       });
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, setInitialized } = authSlice.actions;
 
 export default authSlice.reducer;
