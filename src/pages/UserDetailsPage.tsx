@@ -41,9 +41,15 @@ const UserDetailsPage: React.FC = () => {
   };
 
   const submitHandler = async (values: UserRequest) => {
+    const payload: Partial<UserRequest> = { ...values };
+
+    if (currentUser && values.email === currentUser.email) {
+      delete payload.email;
+    }
+
     try {
       await dispatch(
-        updateUserProfileThunk({ id: userId, data: values }),
+        updateUserProfileThunk({ id: userId, data: payload as UserRequest }),
       ).unwrap();
       setIsEditing(false);
     } catch (error) {
