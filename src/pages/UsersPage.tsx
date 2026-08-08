@@ -32,6 +32,7 @@ const UsersPage: React.FC = () => {
 
   const { profile } = useAppSelector((state) => state.auth);
   const isAdmin = profile?.roles.includes(Roles.ADMIN);
+  const isModerator = profile?.roles.includes(Roles.MODERATOR);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState("id");

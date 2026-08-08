@@ -41,7 +41,7 @@ const UserDetailsPage: React.FC = () => {
   };
 
   const submitHandler = async (values: UserRequest) => {
-    const payload: Partial<UserRequest> = { ...values };
+    const payload: UserRequest = { ...values };
 
     if (currentUser && values.email === currentUser.email) {
       delete payload.email;
@@ -49,7 +49,7 @@ const UserDetailsPage: React.FC = () => {
 
     try {
       await dispatch(
-        updateUserProfileThunk({ id: userId, data: payload as UserRequest }),
+        updateUserProfileThunk({ id: userId, data: payload }),
       ).unwrap();
       setIsEditing(false);
     } catch (error) {
@@ -60,6 +60,12 @@ const UserDetailsPage: React.FC = () => {
 
   const goBackHandler = () => {
     navigate("/users");
+  };
+
+  const roleColors: Record<string, string> = {
+    ADMIN: "red",
+    MODERATOR: "gold",
+    USER: "blue",
   };
 
   if (isLoading) {
@@ -85,12 +91,8 @@ const UserDetailsPage: React.FC = () => {
       </Form.Item>
       <Form.Item label="Роли">
         {currentUser?.roles.map((role) => {
-          let color = "blue";
-          if (role === "ADMIN") color = "red";
-          if (role === "MODERATOR") color = "gold";
-
           return (
-            <Tag color={color} key={role}>
+            <Tag color={roleColors[role] || "blue"} key={role}>
               {role}
             </Tag>
           );
