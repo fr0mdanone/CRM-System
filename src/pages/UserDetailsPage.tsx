@@ -7,6 +7,7 @@ import {
   updateUserProfileThunk,
 } from "../store/admin/admin-actions";
 import { UserRequest } from "../types/admin";
+import { getChangedFields } from "../../utils/forms";
 
 const UserDetailsPage: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
@@ -41,11 +42,9 @@ const UserDetailsPage: React.FC = () => {
   };
 
   const submitHandler = async (values: UserRequest) => {
-    const payload: UserRequest = { ...values };
+    if (!currentUser) return;
 
-    if (currentUser && values.email === currentUser.email) {
-      delete payload.email;
-    }
+    const payload: UserRequest = getChangedFields(currentUser, values);
 
     try {
       await dispatch(

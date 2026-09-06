@@ -5,13 +5,11 @@ import { store } from "../store";
 import { getAccessToken, setAccessToken } from "../../utils/auth";
 
 export const publicApi = axios.create({
-  withCredentials: true,
   baseURL: BASE_URL,
   timeout: 5000,
 });
 
 export const privateApi = axios.create({
-  withCredentials: true,
   baseURL: BASE_URL,
   timeout: 5000,
 });
