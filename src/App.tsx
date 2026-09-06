@@ -11,7 +11,10 @@ import AuthLayout from "./pages/AuthLayout/AuthLayout";
 import AuthPage from "./pages/AuthPage";
 import SignupPage from "./pages/SignupPage";
 import ProtectedRoute from "./pages/ProtectedRoute";
+import UsersPage from "./pages/UsersPage";
 import { silentRefreshThunk } from "./store/auth/auth-actions";
+import { Roles } from "./types/admin";
+import UserDetailsPage from "./pages/UserDetailsPage";
 
 const router = createBrowserRouter([
   {
@@ -42,6 +45,21 @@ const router = createBrowserRouter([
           {
             path: "/profile",
             element: <ProfilePage />,
+          },
+          {
+            element: (
+              <ProtectedRoute allowedRoles={[Roles.ADMIN, Roles.MODERATOR]} />
+            ),
+            children: [
+              {
+                path: "/users",
+                element: <UsersPage />,
+              },
+              {
+                path: "/users/:id",
+                element: <UserDetailsPage />,
+              },
+            ],
           },
         ],
       },
